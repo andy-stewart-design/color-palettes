@@ -4,7 +4,6 @@
 
 import HSLForm from "@/components/HSLForm";
 import HexForm from "@/components/HexForm";
-import TestSlider from "@/components/test-slider";
 import { converter, formatHex } from "culori";
 import { cookies } from "next/headers";
 
@@ -34,7 +33,6 @@ export default async function Home({ searchParams }: PageProps) {
     <main>
       <HexForm hex={keyColor.hex} key={keyColor.hex} />
       <HSLForm h={keyColor.h} s={keyColor.s} l={keyColor.l} />
-      <TestSlider dv={defaultTestValue} />
       <div
         style={{ backgroundColor: keyColor.hex, height: "100px", transition: "all 200ms" }}
       ></div>
