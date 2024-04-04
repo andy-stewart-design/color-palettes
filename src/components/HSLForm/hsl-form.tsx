@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useEffect, type ChangeEvent, type ComponentProps } from "react";
+import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import debounce from "just-debounce-it";
-import type { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import HSLSlider from "./HSLSlider";
+
+type AppRouter = ReturnType<typeof useRouter>;
 
 type PropTypes = {
   h: number;
@@ -19,14 +21,12 @@ export default function HSLForm({ h: defaultH, s: defaultS, l: defaultL }: PropT
   const currentSearchParams = useSearchParams();
 
   useEffect(() => {
-    console.log("effect is running");
-
     setHue((currentH) => (currentH === defaultH ? currentH : defaultH));
     setSaturation((currentS) => (currentS === defaultS ? currentS : defaultS));
     setLightness((currentL) => (currentL === defaultL ? currentL : defaultL));
   }, [defaultH, defaultS, defaultL]);
 
-  function handleChange(type: "h" | "s" | "l", value: string, onChange: (value: number) => void) {
+  function handleChange(type: "h" | "s" | "l", value: string, setState: (value: number) => void) {
     const nextValue = parseInt(value);
     const nextHue = type === "h" ? nextValue : hue;
     const nextSat = type === "s" ? nextValue : saturation;
@@ -38,7 +38,7 @@ export default function HSLForm({ h: defaultH, s: defaultS, l: defaultL }: PropT
     params.set("s", nextSat.toString());
     params.set("l", nextLit.toString());
 
-    onChange(nextValue);
+    setState(nextValue);
     debouncedPush(router, params);
   }
 
@@ -69,24 +69,6 @@ export default function HSLForm({ h: defaultH, s: defaultS, l: defaultL }: PropT
   );
 }
 
-type HSLSliderProps = {
-  label: string;
-  value: number;
-  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-} & ComponentProps<"input">;
-
-function HSLSlider({ label, value, onChange, ...delegated }: HSLSliderProps) {
-  const shortname = label.charAt(0).toLocaleLowerCase();
-
-  return (
-    <div>
-      <label htmlFor={label}>{shortname.toLocaleUpperCase()}</label>
-      <input {...delegated} id={label} type="range" value={value} onChange={onChange} step={0.1} />
-      <span>{value.toFixed(1)}</span>
-    </div>
-  );
-}
-
-const debouncedPush = debounce((router: AppRouterInstance, params: URLSearchParams) => {
+const debouncedPush = debounce((router: AppRouter, params: URLSearchParams) => {
   router.push(`/?${params.toString()}`);
 }, 200);
