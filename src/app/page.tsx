@@ -1,95 +1,73 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+// TODO: finish setting up control panel with number inputs
+// TODO: add logic to generate color palettes
+// TODO: test out more color formats
 
-export default function Home() {
+import HSLForm from "@/components/HSLForm";
+import HexForm from "@/components/HexForm";
+import { converter, formatHex } from "culori";
+import { cookies } from "next/headers";
+
+let okhsl = converter("okhsl");
+
+type PageSearchParams = { hex: string; h: string; s: string; l: string };
+
+type PageProps = {
+  searchParams: PageSearchParams;
+};
+
+export default async function Home({ searchParams }: PageProps) {
+  // await new Promise((res) => setTimeout(res, 1000));
+  const hex = getKeyColorRequest(searchParams);
+
+  const h = searchParams.h ? parseInt(searchParams.h) : undefined;
+  const s = searchParams.s ? parseInt(searchParams.s) : undefined;
+  const l = searchParams.l ? parseInt(searchParams.l) : undefined;
+
+  const keyColor = getKeyColor({ hex, h, s, l });
+
+  if (!keyColor.hex) throw new Error("Something went wrong");
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
+    <main>
+      <HexForm hex={keyColor.hex} key={keyColor.hex} />
+      <HSLForm h={keyColor.h} s={keyColor.s} l={keyColor.l} />
+      <div
+        style={{ backgroundColor: keyColor.hex, height: "100px", transition: "all 200ms" }}
+      ></div>
     </main>
   );
+}
+
+type GetKeyColorParams = {
+  hex: string | undefined;
+  h: number | undefined;
+  s: number | undefined;
+  l: number | undefined;
+};
+function getKeyColor({ hex, h, s, l }: GetKeyColorParams) {
+  const isHSL = h !== undefined && s !== undefined && l !== undefined;
+
+  if (isHSL) {
+    const hsl = { h, s: s / 100, l: l / 100 };
+    const newHex = formatHex({ mode: "okhsl", ...hsl });
+    return { hex: newHex, h, s, l };
+  } else {
+    const foobar = hex;
+    const newColor = okhsl(foobar);
+
+    if (!newColor) return { error: "Something went wrong" };
+
+    const { h: hue, s: sat, l: lit } = newColor;
+    return { hex: foobar, h: hue ?? 0, s: sat * 100, l: lit * 100 };
+  }
+}
+
+function getKeyColorRequest(searchParams: PageSearchParams) {
+  const keyColorParam = searchParams.hex ? `#${searchParams.hex}` : undefined;
+  if (keyColorParam) return keyColorParam;
+
+  const keyColorCookie = cookies().get("keyColor");
+  if (keyColorCookie) return `#${keyColorCookie.value}`;
+
+  return "#B4D455";
 }
