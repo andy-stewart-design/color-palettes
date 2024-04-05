@@ -2,13 +2,13 @@
 // TODO: add logic to generate color palettes
 // TODO: test out more color formats
 
+import { cookies } from "next/headers";
 import HSLForm from "@/components/HSLForm";
 import HexForm from "@/components/HexForm";
-import NumberController from "@/components/NumberController";
 import KeyIndexController from "@/components/KeyIndexController";
-import { converter, formatHex } from "culori";
-import { cookies } from "next/headers";
 import StepsController from "@/components/StepsController";
+import { converter, formatHex } from "culori";
+import { HEX_DEFAULT } from "./constants";
 
 let okhsl = converter("okhsl");
 
@@ -56,6 +56,7 @@ type GetKeyColorParams = {
   s: number | undefined;
   l: number | undefined;
 };
+
 function getKeyColor({ hex, h, s, l }: GetKeyColorParams) {
   const isHSL = h !== undefined && s !== undefined && l !== undefined;
 
@@ -81,5 +82,5 @@ function getKeyColorRequest(searchParams: PageSearchParams) {
   const keyColorCookie = cookies().get("keyColor");
   if (keyColorCookie) return `#${keyColorCookie.value}`;
 
-  return "#B4D455";
+  return HEX_DEFAULT;
 }

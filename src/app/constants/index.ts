@@ -1,3 +1,5 @@
+export const HEX_DEFAULT = "#4AA5B7";
+
 export const INDEX_PARAM = "idx";
 export const INDEX_DEFAULT = 4;
 
