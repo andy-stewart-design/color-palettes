@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent, ComponentPropsWithoutRef } from "react";
+import type { ChangeEvent, KeyboardEvent, ComponentPropsWithoutRef } from "react";
 
 type BaseInputProps = Pick<
   ComponentPropsWithoutRef<"input">,
@@ -22,12 +22,17 @@ export default function NumberInput({
   ...delegated
 }: PropTypes) {
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
+    if (e.target.value === "") return;
+
     if (disabled) return;
+
+    const maxCharLength = max.toString().length;
+    if (e.target.value.length > maxCharLength) return;
 
     onChange(parseInt(e.target.value));
   }
 
-  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+  function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
     if (disabled) return;
 
     if (e.key === "ArrowUp") {

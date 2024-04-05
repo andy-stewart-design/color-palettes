@@ -7,8 +7,9 @@ import HSLForm from "@/components/HSLForm";
 import HexForm from "@/components/HexForm";
 import KeyIndexController from "@/components/KeyIndexController";
 import StepsController from "@/components/StepsController";
+import MaxBrightnessController from "@/components/MaxBrightnessController";
 import { converter, formatHex } from "culori";
-import { HEX_DEFAULT } from "./constants";
+import { HEX_DEFAULT, INDEX_DEFAULT, MAX_BRIGHTNESS_DEFAULT, STEPS_DEFAULT } from "./constants";
 
 let okhsl = converter("okhsl");
 
@@ -19,6 +20,7 @@ type PageSearchParams = {
   l?: string;
   idx?: string;
   steps?: string;
+  max?: string;
 };
 
 type PageProps = {
@@ -30,8 +32,9 @@ export default async function Home({ searchParams }: PageProps) {
   const h = searchParams.h ? parseInt(searchParams.h) : undefined;
   const s = searchParams.s ? parseInt(searchParams.s) : undefined;
   const l = searchParams.l ? parseInt(searchParams.l) : undefined;
-  const keyIndex = searchParams.idx ? parseInt(searchParams.idx) : 4;
-  const steps = searchParams.steps ? parseInt(searchParams.steps) : 11;
+  const keyIndex = searchParams.idx ? parseInt(searchParams.idx) : INDEX_DEFAULT;
+  const steps = searchParams.steps ? parseInt(searchParams.steps) : STEPS_DEFAULT;
+  const maxBrightness = searchParams.max ? parseInt(searchParams.max) : MAX_BRIGHTNESS_DEFAULT;
 
   const keyColor = getKeyColor({ hex, h, s, l });
 
@@ -44,6 +47,7 @@ export default async function Home({ searchParams }: PageProps) {
         <HSLForm h={keyColor.h} s={keyColor.s} l={keyColor.l} />
         <StepsController value={steps} />
         <KeyIndexController value={keyIndex} />
+        <MaxBrightnessController value={maxBrightness} />
       </section>
       <div style={{ backgroundColor: keyColor.hex, height: "100px", transition: "all 200ms" }} />
     </main>
