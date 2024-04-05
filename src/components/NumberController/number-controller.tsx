@@ -1,11 +1,14 @@
 "use client";
 
-import { ChangeEvent, ComponentProps, startTransition, useId, useOptimistic } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { ComponentProps, startTransition, useId, useOptimistic } from "react";
+import { useRouter } from "next/navigation";
+import NumberInput from "../ds/NumberInput";
 
 type PropTypes = {
   label: string;
   value: number;
+  min: number;
+  max: number;
   params: (value: number) => URLSearchParams;
 } & ComponentProps<"input">;
 
@@ -19,8 +22,7 @@ export default function KeyIndexController({
   const id = useId();
   const router = useRouter();
 
-  function handleChange(e: ChangeEvent<HTMLInputElement>) {
-    const newValue = parseInt(e.target.value);
+  function handleChange(newValue: number) {
     const params = getParams(newValue);
 
     startTransition(() => {
@@ -32,7 +34,8 @@ export default function KeyIndexController({
   return (
     <div>
       <label htmlFor={id}>{label}</label>
-      <input {...delegated} id={id} type="number" value={value} onChange={handleChange} />
+      <NumberInput {...delegated} id={id} type="number" value={value} onChange={handleChange} />
+      {/* <input {...delegated} id={id} type="number" value={value} onChange={handleChange} /> */}
     </div>
   );
 }

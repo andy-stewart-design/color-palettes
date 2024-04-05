@@ -28,5 +28,5 @@ export default function StepsController({ value }: PropTypes) {
     return params;
   }
 
-  return <NumberController label="Steps" value={value} params={getParams} min="3" max="19" />;
+  return <NumberController label="Steps" value={value} params={getParams} min={3} max={19} />;
 }

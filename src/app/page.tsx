@@ -42,13 +42,17 @@ export default async function Home({ searchParams }: PageProps) {
       <section>
         <HexForm hex={keyColor.hex} key={keyColor.hex} />
         <HSLForm h={keyColor.h} s={keyColor.s} l={keyColor.l} />
-        <KeyIndexController value={keyIndex} />
         <StepsController value={steps} />
+        <KeyIndexController value={keyIndex} />
       </section>
       <div style={{ backgroundColor: keyColor.hex, height: "100px", transition: "all 200ms" }} />
     </main>
   );
 }
+
+// ----------------------------------------------------------------------
+// HELPER FUNCTIONS
+// ----------------------------------------------------------------------
 
 type GetKeyColorParams = {
   hex: string | undefined;
