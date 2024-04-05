@@ -2,7 +2,7 @@
 
 import { startTransition } from "react";
 import { useFormState } from "react-dom";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 type PropTypes = {
   hex: string;
@@ -11,13 +11,17 @@ type PropTypes = {
 export default function StatefulForm({ hex }: PropTypes) {
   const [state, formAction] = useFormState(handleSubmit, hex.replace("#", ""));
   const router = useRouter();
+  const currentSearchParams = useSearchParams();
 
   function handleSubmit(__prevState: string, formData: FormData) {
     const newHex = formData.get("hex");
 
     if (!newHex || newHex === "") return `${newHex}`;
 
-    const params = new URLSearchParams();
+    const params = new URLSearchParams(currentSearchParams);
+    params.delete("h");
+    params.delete("s");
+    params.delete("l");
     params.set("hex", newHex.toString());
 
     startTransition(() => {

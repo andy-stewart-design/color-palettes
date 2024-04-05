@@ -4,38 +4,48 @@
 
 import HSLForm from "@/components/HSLForm";
 import HexForm from "@/components/HexForm";
+import NumberController from "@/components/NumberController";
+import KeyIndexController from "@/components/KeyIndexController";
 import { converter, formatHex } from "culori";
 import { cookies } from "next/headers";
+import StepsController from "@/components/StepsController";
 
 let okhsl = converter("okhsl");
 
-type PageSearchParams = { hex?: string; h?: string; s?: string; l?: string; test?: string };
+type PageSearchParams = {
+  hex?: string;
+  h?: string;
+  s?: string;
+  l?: string;
+  idx?: string;
+  steps?: string;
+};
 
 type PageProps = {
   searchParams: PageSearchParams;
 };
 
 export default async function Home({ searchParams }: PageProps) {
-  // await new Promise((res) => setTimeout(res, 1000));
   const hex = getKeyColorRequest(searchParams);
-
   const h = searchParams.h ? parseInt(searchParams.h) : undefined;
   const s = searchParams.s ? parseInt(searchParams.s) : undefined;
   const l = searchParams.l ? parseInt(searchParams.l) : undefined;
+  const keyIndex = searchParams.idx ? parseInt(searchParams.idx) : 4;
+  const steps = searchParams.steps ? parseInt(searchParams.steps) : 11;
 
   const keyColor = getKeyColor({ hex, h, s, l });
 
   if (!keyColor.hex) throw new Error("Something went wrong");
 
-  const defaultTestValue = searchParams.test ? parseInt(searchParams.test) : 5;
-
   return (
     <main>
-      <HexForm hex={keyColor.hex} key={keyColor.hex} />
-      <HSLForm h={keyColor.h} s={keyColor.s} l={keyColor.l} />
-      <div
-        style={{ backgroundColor: keyColor.hex, height: "100px", transition: "all 200ms" }}
-      ></div>
+      <section>
+        <HexForm hex={keyColor.hex} key={keyColor.hex} />
+        <HSLForm h={keyColor.h} s={keyColor.s} l={keyColor.l} />
+        <KeyIndexController value={keyIndex} />
+        <StepsController value={steps} />
+      </section>
+      <div style={{ backgroundColor: keyColor.hex, height: "100px", transition: "all 200ms" }} />
     </main>
   );
 }
