@@ -10,6 +10,8 @@ import StepsController from "@/components/StepsController";
 import MaxBrightnessController from "@/components/MaxBrightnessController";
 import { converter, formatHex } from "culori";
 import { HEX_DEFAULT, INDEX_DEFAULT, MAX_BRIGHTNESS_DEFAULT, STEPS_DEFAULT } from "./constants";
+import NumberForm from "@/components/number-form";
+import OptimisticSlider from "@/components/optimistic-slider";
 
 let okhsl = converter("okhsl");
 
@@ -48,6 +50,8 @@ export default async function Home({ searchParams }: PageProps) {
         <StepsController value={steps} />
         <KeyIndexController value={keyIndex} />
         <MaxBrightnessController value={maxBrightness} />
+        <NumberForm />
+        <OptimisticSlider />
       </section>
       <div style={{ backgroundColor: keyColor.hex, height: "100px", transition: "all 200ms" }} />
     </main>

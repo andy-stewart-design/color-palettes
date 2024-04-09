@@ -62,6 +62,8 @@ export default function HSLForm({ h: defaultH, s: defaultS, l: defaultL }: PropT
         label="lightness"
         value={lightness}
         onChange={(e) => handleChange("l", e.target.value, setLightness)}
+        onMouseUp={() => console.log("onMouseUp")}
+        onTouchEnd={() => console.log("onTouchEnd")}
         min={0}
         max={100}
       />

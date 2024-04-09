@@ -76,12 +76,13 @@ function handleChange(e: ChangeEvent<HTMLInputElement>) {
 }
 
 function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
-  const isValidKey = testKeyValidity(e);
-  if (isValidKey) return;
+  const keyIsFunctional = testKeyValidity(e);
+  if (keyIsFunctional) return;
+
   if (e.key === "#") e.preventDefault();
 
-  const containsInvalidCharacters = e.key.match(/[^#0-9a-fA-F]/gm);
-  if (containsInvalidCharacters) e.preventDefault();
+  const keyIsInvalidCharacter = e.key.match(/[^#0-9a-fA-F]/gm);
+  if (keyIsInvalidCharacter) e.preventDefault();
 }
 
 function testKeyValidity(e: KeyboardEvent<HTMLInputElement>) {
