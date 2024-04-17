@@ -1,63 +1,44 @@
 "use client";
 
-import { startTransition, useRef, ComponentPropsWithoutRef, useOptimistic } from "react";
+import { useRef, ComponentPropsWithoutRef, ChangeEvent } from "react";
 import { useFormState } from "react-dom";
-import { useRouter, useSearchParams } from "next/navigation";
 
 type PropTypes = {
-  //   hex: string;
+  name: string;
+  value: string;
+  min: string;
+  max: string;
+  onChange: (name: string, value: string) => void;
 };
 
-const TEST_PARAM = "test";
-const DEFAULT_VALUE = 5;
-const MIN_VALUE = 0;
-const MAX_VALUE = 15;
-
-export default function NumberForm({}: PropTypes) {
-  const [value, formAction] = useFormState(handleSubmit, DEFAULT_VALUE.toString());
-  const [optimistic, setOptimistic] = useOptimistic(value);
-
+export default function NumberForm({ name, value, onChange, min, max }: PropTypes) {
   const formRef = useRef<HTMLFormElement>(null);
-  const router = useRouter();
-  const currentSearchParams = useSearchParams();
-
-  function pushRouter(value: string) {
-    const params = new URLSearchParams(currentSearchParams);
-
-    if (parseInt(value) === DEFAULT_VALUE) params.delete(TEST_PARAM);
-    else params.set(TEST_PARAM, value);
-
-    startTransition(() => {
-      setOptimistic(value);
-      router.push(`/?${params.toString()}`);
-    });
-  }
+  const [formValue, formAction] = useFormState(handleSubmit, value.toString());
 
   function handleSubmit(prevState: string, formData: FormData) {
-    const formValue = formData.get(TEST_PARAM);
+    const formValue = formData.get(name);
     if (formValue === null) return prevState;
 
     const nextValueString = formValue.toString();
     const nextValueNumber = parseInt(nextValueString);
 
-    console.log({ nextValueString });
-
     if (nextValueString !== "") {
-      const clampedValue = clamp(nextValueNumber, MIN_VALUE, MAX_VALUE);
-      pushRouter(clampedValue.toString());
+      const clampedValue = clamp(nextValueNumber, parseFloat(min), parseFloat(max));
+      onChange(name, clampedValue.toString());
       return clampedValue.toString();
     } else {
       return nextValueString;
     }
   }
 
-  function handleChange() {
+  function handleChange(e: ChangeEvent<HTMLInputElement>) {
     formRef.current?.requestSubmit();
   }
 
   return (
     <form ref={formRef} action={formAction}>
-      <NumberInput name={TEST_PARAM} value={optimistic} onChange={handleChange} />
+      <label htmlFor={name}>{name}</label>
+      <NumberInput id={name} name={name} value={value.toString()} onChange={handleChange} />
     </form>
   );
 }
@@ -82,8 +63,6 @@ export function NumberInput({ value, ...delegated }: NumberInputProps) {
       type="number"
       value={value}
       placeholder={value}
-      min={MIN_VALUE}
-      max={MAX_VALUE}
       onInput={(e) => e.currentTarget.setCustomValidity("")}
     />
   );

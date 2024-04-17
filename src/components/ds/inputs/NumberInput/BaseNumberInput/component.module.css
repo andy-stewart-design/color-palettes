@@ -1,0 +1,15 @@
+.container {
+  display: grid;
+  grid-template-columns: 1.5rem calc(var(--number-input-w) - 3rem) 1.5rem;
+  width: max-content;
+}
+
+.input {
+  text-align: center;
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}

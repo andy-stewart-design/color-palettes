@@ -1,50 +1,39 @@
 "use client";
 
-import { startTransition, useOptimistic, useRef } from "react";
+import { ChangeEvent, useRef, useState } from "react";
 import { useFormState } from "react-dom";
-import { useRouter, useSearchParams } from "next/navigation";
 
-export default function OptimisticSlider() {
+type PropTypes = {
+  name: string;
+  value: string;
+  onChange: (name: string, value: string) => void;
+};
+
+export default function OptimisticSlider({ name, value, onChange }: PropTypes) {
   const formRef = useRef<HTMLFormElement>(null);
-  const [state, formAction] = useFormState(handleSubmit, "50");
-  const [optimistic, setOptimistic] = useOptimistic(state);
-  const router = useRouter();
-  const currentSearchParams = useSearchParams();
+  const [formValue, formAction] = useFormState(handleSubmit, value);
+  const [isActive, setIsActive] = useState(false);
+  const [activeValue, setActiveValue] = useState(value);
 
   function handleSubmit(prevState: string, formData: FormData) {
-    const formValue = formData.get("foo");
+    const formValue = formData.get(name);
     if (formValue === null) return prevState;
 
-    const pushRouter = formData.get("pushRouter");
-    if (pushRouter !== null) {
-      const params = new URLSearchParams(currentSearchParams);
-      params.set("slider", formValue.toString());
-      startTransition(() => {
-        setOptimistic(formValue.toString());
-        router.push(`/?${params.toString()}`);
-      });
-      return formValue.toString();
-    } else {
-      startTransition(() => {
-        setOptimistic(formValue.toString());
-      });
-
-      return formValue.toString();
-    }
+    onChange(name, formValue.toString());
+    return formValue.toString();
   }
 
-  function handleChange() {
-    formRef.current?.requestSubmit();
+  function handleMouseDown() {
+    setIsActive(true);
   }
 
   function handleMouseUp() {
-    const form = formRef.current;
-    if (form === null) return;
+    formRef.current?.requestSubmit();
+    setIsActive(false);
+  }
 
-    const formData = new FormData(form);
-    formData.append("pushRouter", "true");
-
-    handleSubmit(state, formData);
+  function handleChange(e: ChangeEvent<HTMLInputElement>) {
+    setActiveValue(e.target.value);
   }
 
   return (
@@ -56,13 +45,20 @@ export default function OptimisticSlider() {
           min="0"
           max="100"
           step="0.01"
-          value={optimistic}
-          onChange={handleChange}
+          onMouseDown={handleMouseDown}
+          onTouchStart={handleMouseDown}
           onMouseUp={handleMouseUp}
           onTouchEnd={handleMouseUp}
+          onChange={handleChange}
         />
       </form>
-      <p>{optimistic}</p>
+      {isActive ? <p style={{ opacity: 0.35 }}>Value: {activeValue}</p> : <p>Value: {value}</p>}
     </div>
   );
+}
+
+function clamp(value: number, min: number, max: number) {
+  if (value < min) return min;
+  if (value > max) return max;
+  else return value;
 }

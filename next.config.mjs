@@ -1,4 +1,8 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+  experimental: {
+    useLightningcss: true,
+  },
+};
 
 export default nextConfig;

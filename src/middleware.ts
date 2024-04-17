@@ -3,28 +3,32 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
-  const keyColorHex = request.nextUrl.searchParams.get("hex");
-
   let response = NextResponse.next();
 
+  const keyColorHex = request.nextUrl.searchParams.get("hex");
   if (keyColorHex) response.cookies.set("keyColor", keyColorHex);
 
-  const keyColorH = request.nextUrl.searchParams.get("h");
+  const keyColorHSL = request.nextUrl.searchParams.get("hsl");
 
-  if (keyColorH) {
-    const keyColorS = request.nextUrl.searchParams.get("s");
-    const keyColorL = request.nextUrl.searchParams.get("l");
-
-    if (!keyColorS || !keyColorL) return response;
-
-    const hsl = {
-      h: parseInt(keyColorH),
-      s: parseInt(keyColorS) / 100,
-      l: parseInt(keyColorL) / 100,
-    };
-    const newHex = formatHex({ mode: "okhsl", ...hsl });
+  if (keyColorHSL) {
+    const { h, s, l } = parseHSLParam(keyColorHSL);
+    if (!h || !s || !l) return response;
+    const newHex = formatHex({ mode: "okhsl", h, s, l });
     response.cookies.set("keyColor", newHex.replace("#", ""));
   }
 
   return response;
+}
+
+function parseHSLParam(param: string) {
+  const [h, s, l] = param.split("_");
+  const hue = parseFloat(h);
+  const sat = parseFloat(s) / 100;
+  const lit = parseFloat(l) / 100;
+
+  if (typeof hue !== "number" || typeof sat !== "number" || typeof lit !== "number") {
+    return { h: undefined, s: undefined, l: undefined };
+  }
+
+  return { h: hue, s: sat, l: lit };
 }

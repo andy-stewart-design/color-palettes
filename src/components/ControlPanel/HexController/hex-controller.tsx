@@ -1,21 +1,31 @@
 "use client";
 
-import { startTransition, type KeyboardEvent, ChangeEvent } from "react";
+import { useEffect, useRef, type KeyboardEvent, type ChangeEvent } from "react";
 import { useFormState } from "react-dom";
-import { useRouter, useSearchParams } from "next/navigation";
 import { HEX_DEFAULT } from "@/app/constants";
+import classes from "./component.module.css";
 
 type PropTypes = {
-  hex: string;
+  name: string;
+  value: string;
+  onChange: (name: string, value: string) => void;
 };
 
-export default function HexForm({ hex }: PropTypes) {
-  const [formState, formAction] = useFormState(handleSubmit, hex.replace("#", ""));
-  const router = useRouter();
-  const currentSearchParams = useSearchParams();
+export default function HexController({ name, value, onChange }: PropTypes) {
+  const systemValue = value.replace("#", ""); // Hex value without #
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [formState, formAction] = useFormState(handleSubmit, systemValue);
+
+  useEffect(() => {
+    const input = inputRef.current;
+    const normalizedValue = systemValue;
+    if (input && input.value !== normalizedValue) {
+      input.value = normalizedValue;
+    }
+  }, [value]);
 
   function handleSubmit(__prevState: string, formData: FormData) {
-    const hexData = formData.get("hex");
+    const hexData = formData.get(name);
     if (hexData === null) return `${hexData}`;
 
     const hexValue = hexData.toString();
@@ -23,39 +33,27 @@ export default function HexForm({ hex }: PropTypes) {
       return hexValue;
     }
 
-    if (hexValue !== "") {
+    if (hexValue !== "" && hexValue !== systemValue) {
       const formattedValue = formatHexValue(hexValue);
-
-      const params = generateSearchParams(formattedValue, currentSearchParams);
-
-      startTransition(() => {
-        router.push(`/?${params.toString()}`);
-      });
-
+      onChange(name, formattedValue);
       return formattedValue;
     } else {
       const formattedValue = HEX_DEFAULT.replace("#", "");
-      const params = generateSearchParams(formattedValue, currentSearchParams);
-
-      startTransition(() => {
-        router.push(`/?${params.toString()}`);
-      });
-
       return formattedValue;
     }
   }
 
   return (
-    <form action={formAction}>
+    <form action={formAction} className={classes.form}>
       <input
+        ref={inputRef}
         type="text"
-        name="hex"
+        name={name}
         defaultValue={formState}
         placeholder={HEX_DEFAULT.replace("#", "")}
         onKeyDown={handleKeyDown}
         onChange={handleChange}
       />
-      <button type="submit">Submit</button>
     </form>
   );
 }
@@ -66,22 +64,23 @@ export default function HexForm({ hex }: PropTypes) {
 
 function handleChange(e: ChangeEvent<HTMLInputElement>) {
   const newValue = e.target.value;
-  const containsInvalidCharacters = newValue.match(/[^#0-9a-fA-F]/gm);
-  if (containsInvalidCharacters) e.preventDefault();
 
-  if (newValue.length > 6) {
-    const trimmedValue = e.currentTarget.value.slice(0, 6);
+  console.log(newValue.charAt(0) === "#");
+
+  if (newValue.charAt(0) === "#") {
+    const trimmedValue = newValue.replace("#", "");
+    e.currentTarget.value = trimmedValue;
+  } else if (newValue.length > 6) {
+    const trimmedValue = newValue.slice(0, 6);
     e.currentTarget.value = trimmedValue;
   }
 }
 
 function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
-  const keyIsFunctional = testKeyValidity(e);
-  if (keyIsFunctional) return;
+  const keyIsWhiteListed = testKeyValidity(e);
+  if (keyIsWhiteListed) return;
 
-  if (e.key === "#") e.preventDefault();
-
-  const keyIsInvalidCharacter = e.key.match(/[^#0-9a-fA-F]/gm);
+  const keyIsInvalidCharacter = e.key.match(/[^0-9a-fA-F]/gm);
   if (keyIsInvalidCharacter) e.preventDefault();
 }
 
@@ -90,6 +89,7 @@ function testKeyValidity(e: KeyboardEvent<HTMLInputElement>) {
   else if (e.key === "Enter" || e.key === "Meta") return true;
   else if (e.key === "ArrowLeft" || e.key === "ArrowRight") return true;
   else if (e.key === "ArrowDown" || e.key === "ArrowUp") return true;
+  else if (e.metaKey && (e.key === "v" || e.key === "V")) return true;
   else return false;
 }
 
@@ -101,13 +101,4 @@ function formatHexValue(value: string) {
   } else if (value.length > 6) {
     return value.slice(0, 6);
   } else return value;
-}
-
-function generateSearchParams(value: string, currentParams: URLSearchParams) {
-  const params = new URLSearchParams(currentParams);
-  params.delete("h");
-  params.delete("s");
-  params.delete("l");
-  params.set("hex", value);
-  return params;
 }

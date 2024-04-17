@@ -1,0 +1,8 @@
+.sidebar {
+  display: grid;
+  grid-auto-rows: min-content;
+  gap: 1rem;
+  padding-block: 1.5rem;
+  padding-inline: 2rem;
+  border-right: 1px solid oklch(0 0 0 / 0.2);
+}
