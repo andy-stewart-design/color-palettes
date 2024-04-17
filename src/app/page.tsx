@@ -31,7 +31,6 @@ export default async function Home({ searchParams }: PageProps) {
   const minBrightness = searchParams.min ? searchParams.min : DEFAULTS.values.min;
 
   const keyColor = getKeyColor({ hex, hsl });
-  if ("error" in keyColor) throw new Error(keyColor.error);
   const newHSL = `${keyColor.h}_${keyColor.s}_${keyColor.l}`;
 
   return (
@@ -53,32 +52,13 @@ export default async function Home({ searchParams }: PageProps) {
 // HELPER FUNCTIONS
 // ----------------------------------------------------------------------
 
-type GetKeyColorParams = {
-  hex: string | undefined;
-  hsl: string | undefined;
-};
-
-interface GetKeyColorError {
-  error: string;
-}
-
-interface GetKeyColorValue {
-  hex: string;
-  h: string;
-  s: string;
-  l: string;
-}
-
-type GetKeyColorReturn = GetKeyColorError | GetKeyColorValue;
-
-function getKeyColor({ hex, hsl }: GetKeyColorParams): GetKeyColorReturn {
+function getKeyColor({ hex, hsl }: { hex?: string; hsl?: string }) {
   if (hsl !== undefined) {
     const { h, s, l } = parseHSLParam(hsl);
 
     if (h === undefined || s === undefined || l === undefined) {
-      return {
-        error: `HSL query param is improperly formatted. Expected three numbers separated by an underscore (e.g. 0_0_0). Received: ${hsl}`,
-      };
+      const error = `HSL query param is improperly formatted. Expected three numbers separated by an underscore (e.g. 0_0_0). Received: ${hsl}`;
+      throw new Error(error);
     }
 
     const newHex = formatHex({ mode: "okhsl", h, s, l });
@@ -87,7 +67,8 @@ function getKeyColor({ hex, hsl }: GetKeyColorParams): GetKeyColorReturn {
     const newColor = okhsl(hex);
 
     if (!newColor) {
-      return { error: `There was an error converting the given hex value (${hex}) into OKHSL` };
+      const error = `There was an error converting the given hex value (${hex}) into OKHSL`;
+      throw new Error(error);
     }
 
     const { h: hue, s: sat, l: lit } = newColor;
@@ -96,7 +77,8 @@ function getKeyColor({ hex, hsl }: GetKeyColorParams): GetKeyColorReturn {
     const l = (lit * 100).toString();
     return { hex, h, s, l };
   } else {
-    return { error: "No key color found" };
+    const error = "Could not generate a key color because both hex and hsl values were undefined.";
+    throw new Error(error);
   }
 }
 
