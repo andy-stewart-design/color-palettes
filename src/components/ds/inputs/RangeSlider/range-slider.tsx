@@ -15,22 +15,20 @@ type PropTypes = {
 export default function RangeSlider({ name, value, min, max, onChange }: PropTypes) {
   const formRef = useRef<HTMLFormElement>(null);
   const sliderRef = useRef<HTMLInputElement>(null);
-  const normalizeValue =
-    parseFloat(value) > parseFloat(max) - 0.1
-      ? max
-      : parseFloat(value).toFixed(getDecimalCount(value));
+  const numberRef = useRef<HTMLInputElement>(null);
+  const normalizedValue = normalizeValue(value, min, max);
 
-  const [formValue, formAction] = useFormState(handleSubmit, normalizeValue);
+  const [formValue, formAction] = useFormState(handleSubmit, normalizedValue);
   const [sliderIsActive, setSliderIsActive] = useState(false);
-  const [activeSliderValue, setActiveSliderValue] = useState(normalizeValue);
+  const [activeSliderValue, setActiveSliderValue] = useState(normalizedValue);
 
   useEffect(() => {
     const slider = sliderRef.current;
-    if (!slider) return;
+    const number = numberRef.current;
+    if (!slider || !number) return;
 
-    if (slider.value !== value) {
-      slider.value = value;
-    }
+    if (slider.value !== value) slider.value = value;
+    if (number.value !== value) number.value = normalizedValue;
   }, [value]);
 
   function handleSubmit(prevState: string, formData: FormData) {
@@ -41,7 +39,7 @@ export default function RangeSlider({ name, value, min, max, onChange }: PropTyp
     return formValue.toString();
   }
 
-  // Range slider-specific functions
+  // RANGE SLIDER-SPECIFIC FUNCTIONS
 
   function handleSliderKeyDown(e: KeyboardEvent<HTMLInputElement>) {
     const slider = sliderRef.current;
@@ -73,7 +71,7 @@ export default function RangeSlider({ name, value, min, max, onChange }: PropTyp
     setSliderIsActive(false);
   }
 
-  // Number input-specific functions
+  // NUMBER INPUT-SPECIFIC FUNCTIONS
 
   function handleNumberKeyDown(e: KeyboardEvent<HTMLInputElement>) {
     const slider = sliderRef.current;
@@ -89,16 +87,15 @@ export default function RangeSlider({ name, value, min, max, onChange }: PropTyp
       const newValue = Math.ceil(e.currentTarget.valueAsNumber) - 1;
       slider.value = newValue.toString();
       formRef.current?.requestSubmit();
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      const newValue = e.currentTarget.valueAsNumber;
+      const previousValue = parseFloat(formValue);
+      if (newValue !== previousValue) {
+        slider.value = newValue.toString();
+        formRef.current?.requestSubmit();
+      }
     }
-  }
-
-  function handleNumberChange(e: ChangeEvent<HTMLInputElement>) {
-    const slider = sliderRef.current;
-    if (!slider) return;
-
-    const sliderValue = e.target.value;
-    sliderRef.current.value = sliderValue;
-    formRef.current?.requestSubmit();
   }
 
   return (
@@ -125,10 +122,10 @@ export default function RangeSlider({ name, value, min, max, onChange }: PropTyp
         />
         <div className={classes.number}>
           <input
+            ref={numberRef}
             type="number"
-            value={normalizeValue}
+            defaultValue={formValue}
             onKeyDown={handleNumberKeyDown}
-            onChange={handleNumberChange}
             step={0.01}
             onInput={(e) => e.currentTarget.setCustomValidity("")}
           />
@@ -139,10 +136,30 @@ export default function RangeSlider({ name, value, min, max, onChange }: PropTyp
   );
 }
 
-function getDecimalCount(value: string) {
+// -----------------------------------------------------
+// HELPER FUNCTIONS
+// -----------------------------------------------------
+
+function normalizeValue(value: string, min: string, max: string) {
+  const valueAsNumber = parseFloat(value);
+  if (valueAsNumber > parseFloat(max) - 0.1) {
+    return max;
+  } else if (valueAsNumber < parseFloat(min) + 0.1) {
+    return min;
+  }
+
   if (value.includes(".")) {
-    const decimals = value.split(".")[1].length;
-    if (decimals > 2) return 2;
-    else return decimals;
-  } else return 0;
+    const [_, float] = value.split(".");
+
+    if (parseInt(float) < 5) {
+      return Math.floor(valueAsNumber).toString();
+    } else if (parseInt(float) > 95) {
+      return Math.ceil(valueAsNumber).toString();
+    } else {
+      const decimalCount = float.length > 2 ? 2 : float.length;
+      return valueAsNumber.toFixed(decimalCount);
+    }
+  } else {
+    return value;
+  }
 }

@@ -18,7 +18,7 @@ type PropTypes = {
 };
 
 export default function ControlPanel(props: PropTypes) {
-  const currentParams = props;
+  const currentParams = { ...props, hex: props.hex.replace("#", "") };
 
   const [currentValues, setCurrentValues] = useOptimistic(currentParams);
   const router = useRouter();
@@ -38,7 +38,9 @@ export default function ControlPanel(props: PropTypes) {
     } else if (name === "hsl") {
       params.delete("hex");
     } else {
-      const paramKeys = Object.keys(currentSearchParams) as Array<SEARCH_PARAMS>;
+      const iterableParams = Object.fromEntries(currentSearchParams);
+      const paramKeys = Object.keys(iterableParams) as Array<SEARCH_PARAMS>;
+
       if (!paramKeys.includes("hex")) params.delete("hex");
       if (!paramKeys.includes("hsl")) params.delete("hsl");
 

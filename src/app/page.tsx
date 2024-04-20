@@ -1,5 +1,5 @@
-// TODO: add logic to generate color palettes
 // TODO: test out more color formats
+// TODO: add logic to generate color palettes
 
 import { cookies } from "next/headers";
 import { converter, formatHex } from "culori";
