@@ -1,12 +1,11 @@
-// TODO: add logic to generate color palettes
+// TODO: Update color generator function to use min and max brightness values
 
 import { cookies } from "next/headers";
-import { converter, formatHex } from "culori";
+import { formatHex } from "culori";
 import ControlPanel from "@/components/ControlPanel";
+import { generateSpectrum, okhsl } from "@/utils/generate-spectrum";
 import { DEFAULTS } from "./constants";
 import classes from "./page.module.css";
-
-let okhsl = converter("okhsl");
 
 type PageSearchParams = {
   hex?: string;
@@ -24,12 +23,15 @@ type PageProps = {
 export default async function Home({ searchParams }: PageProps) {
   const hex = getKeyHexValue(searchParams);
   const hsl = searchParams.hsl;
-  const keyIndex = searchParams.idx ? searchParams.idx : DEFAULTS.values.idx;
-  const steps = searchParams.steps ? searchParams.steps : DEFAULTS.values.steps;
-  const maxBright = searchParams.max ? searchParams.max : DEFAULTS.values.max;
-  const minBright = searchParams.min ? searchParams.min : DEFAULTS.values.min;
+  const keyIndex = searchParams.idx ?? DEFAULTS.values.idx;
+  const steps = searchParams.steps ?? DEFAULTS.values.steps;
+  const maxBright = searchParams.max ?? DEFAULTS.values.max;
+  const minBright = searchParams.min ?? DEFAULTS.values.min;
 
   const keyColor = getKeyColor({ hex, hsl });
+  const colorObject = await generateSpectrum(keyColor.hex, steps, keyIndex);
+  console.log(colorObject);
+
   const newHSL = `${keyColor.h}_${keyColor.s}_${keyColor.l}`;
 
   return (
@@ -37,7 +39,7 @@ export default async function Home({ searchParams }: PageProps) {
       <ControlPanel
         hex={keyColor.hex}
         hsl={newHSL}
-        idx={keyIndex}
+        idx={colorObject.keyIndex.generated.toString()}
         steps={steps}
         max={maxBright}
         min={minBright}
