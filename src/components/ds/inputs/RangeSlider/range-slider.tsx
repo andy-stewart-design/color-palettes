@@ -111,6 +111,7 @@ export default function RangeSlider({ name, value, min, max, onChange }: PropTyp
           ref={sliderRef}
           id={name}
           name={name}
+          className={classes.slider}
           type="range"
           min={min}
           max={max}
