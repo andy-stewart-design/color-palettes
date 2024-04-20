@@ -63,6 +63,9 @@ export default function RangeSlider({ name, value, min, max, onChange }: PropTyp
   }
 
   function handleSliderChange(e: ChangeEvent<HTMLInputElement>) {
+    const slider = sliderRef.current;
+    if (!slider) return;
+    slider.value = e.target.value;
     setActiveSliderValue(e.target.value);
   }
 
