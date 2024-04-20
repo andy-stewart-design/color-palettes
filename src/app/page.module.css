@@ -1,5 +1,12 @@
 .main {
   display: grid;
-  grid-template-columns: 400px 1fr;
   min-height: 100vh;
+
+  @media (min-width: 560px) {
+    grid-template-columns: 320px 1fr;
+  }
+
+  @media (min-width: 800px) {
+    grid-template-columns: 400px 1fr;
+  }
 }

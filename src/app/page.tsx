@@ -1,4 +1,3 @@
-// TODO: test out more color formats
 // TODO: add logic to generate color palettes
 
 import { cookies } from "next/headers";
@@ -27,8 +26,8 @@ export default async function Home({ searchParams }: PageProps) {
   const hsl = searchParams.hsl;
   const keyIndex = searchParams.idx ? searchParams.idx : DEFAULTS.values.idx;
   const steps = searchParams.steps ? searchParams.steps : DEFAULTS.values.steps;
-  const maxBrightness = searchParams.max ? searchParams.max : DEFAULTS.values.max;
-  const minBrightness = searchParams.min ? searchParams.min : DEFAULTS.values.min;
+  const maxBright = searchParams.max ? searchParams.max : DEFAULTS.values.max;
+  const minBright = searchParams.min ? searchParams.min : DEFAULTS.values.min;
 
   const keyColor = getKeyColor({ hex, hsl });
   const newHSL = `${keyColor.h}_${keyColor.s}_${keyColor.l}`;
@@ -40,8 +39,8 @@ export default async function Home({ searchParams }: PageProps) {
         hsl={newHSL}
         idx={keyIndex}
         steps={steps}
-        max={maxBrightness}
-        min={minBrightness}
+        max={maxBright}
+        min={minBright}
       />
       <div style={{ backgroundColor: keyColor.hex, transition: "all 200ms" }} />
     </main>
