@@ -21,6 +21,7 @@ export default function RangeSlider({ name, value, min, max, onChange }: PropTyp
   const [formValue, formAction] = useFormState(handleSubmit, normalizedValue);
   const [sliderIsActive, setSliderIsActive] = useState(false);
   const [activeSliderValue, setActiveSliderValue] = useState(normalizedValue);
+  const progress = parseFloat(activeSliderValue) / parseFloat(max);
 
   useEffect(() => {
     const slider = sliderRef.current;
@@ -112,6 +113,7 @@ export default function RangeSlider({ name, value, min, max, onChange }: PropTyp
           id={name}
           name={name}
           className={classes.slider}
+          style={{ "--progress-decimal": progress } as React.CSSProperties}
           type="range"
           min={min}
           max={max}
