@@ -49,6 +49,7 @@
     background: transparent;
     height: var(--thumb-hit-target);
     width: var(--thumb-hit-target);
+    box-shadow: none;
   }
 
   &::-moz-range-thumb {
@@ -57,6 +58,7 @@
     background-color: transparent;
     height: var(--thumb-hit-target);
     width: var(--thumb-hit-target);
+    box-shadow: none;
   }
 
   &::-webkit-slider-runnable-track {
@@ -84,7 +86,6 @@
     border: var(--thumb-border);
     border-radius: var(--thumb-border-radius);
     background-clip: padding-box;
-    box-shadow: none;
   }
 }
 
