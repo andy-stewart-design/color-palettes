@@ -25,9 +25,30 @@ export default function HSLController({ h, s, l, onChange }: PropTypes) {
 
   return (
     <div className={classes.controller}>
-      <RangeSlider name="h" value={h} onChange={handleChange} min="0" max="360" />
-      <RangeSlider name="s" value={s} onChange={handleChange} min="0" max="100" />
-      <RangeSlider name="l" value={l} onChange={handleChange} min="0" max="100" />
+      <RangeSlider
+        name="h"
+        value={h}
+        onChange={handleChange}
+        min="0"
+        max="360"
+        className={classes.hue}
+      />
+      <RangeSlider
+        name="s"
+        value={s}
+        onChange={handleChange}
+        min="0"
+        max="100"
+        className={classes.sat}
+      />
+      <RangeSlider
+        name="l"
+        value={l}
+        onChange={handleChange}
+        min="0"
+        max="100"
+        className={classes.lit}
+      />
     </div>
   );
 }

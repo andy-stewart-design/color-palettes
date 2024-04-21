@@ -30,7 +30,7 @@ export default async function Home({ searchParams }: PageProps) {
 
   const keyColor = getKeyColor({ hex, hsl });
   const colorObject = await generateSpectrum(keyColor.hex, steps, keyIndex);
-  console.log(colorObject);
+  // console.log(colorObject);
 
   const newHSL = `${keyColor.h}_${keyColor.s}_${keyColor.l}`;
 

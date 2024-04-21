@@ -1,4 +1,23 @@
 .controller {
   display: grid;
-  gap: 1rem;
+  gap: 0.5rem;
+}
+
+.hue {
+  --track-background: linear-gradient(
+    to right in oklch longer hue,
+    oklch(70% 0.3 0) 0%,
+    oklch(70% 0.3 0) 100%
+  );
+  --thumb-border: 3px solid transparent;
+}
+
+.sat {
+  --track-background: linear-gradient(to right, oklch(60% 0.05 0) 0%, oklch(60% 0.4 0) 100%);
+  --thumb-border: 3px solid transparent;
+}
+
+.lit {
+  --track-background: linear-gradient(to right, oklch(5% 0.1 0) 0%, oklch(95% 0.05 0) 100%);
+  --thumb-border: 3px solid transparent;
 }

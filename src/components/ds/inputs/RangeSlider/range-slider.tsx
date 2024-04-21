@@ -10,9 +10,10 @@ type PropTypes = {
   min: string;
   max: string;
   onChange: (name: string, value: string) => void;
+  className?: string;
 };
 
-export default function RangeSlider({ name, value, min, max, onChange }: PropTypes) {
+export default function RangeSlider({ name, value, min, max, onChange, className }: PropTypes) {
   const formRef = useRef<HTMLFormElement>(null);
   const sliderRef = useRef<HTMLInputElement>(null);
   const numberRef = useRef<HTMLInputElement>(null);
@@ -112,7 +113,7 @@ export default function RangeSlider({ name, value, min, max, onChange }: PropTyp
           ref={sliderRef}
           id={name}
           name={name}
-          className={classes.slider}
+          className={`${classes.slider} ${className}`}
           style={{ "--progress-decimal": progress } as React.CSSProperties}
           type="range"
           min={min}
