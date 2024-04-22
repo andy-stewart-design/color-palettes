@@ -6,6 +6,7 @@ import ControlPanel from "@/components/ControlPanel";
 import { generateSpectrum, okhsl } from "@/utils/generate-spectrum";
 import { DEFAULTS } from "./constants";
 import classes from "./page.module.css";
+import { generateCSSVariables } from "@/utils/generate-css-vars";
 
 type PageSearchParams = {
   hex?: string;
@@ -21,30 +22,34 @@ type PageProps = {
 };
 
 export default async function Home({ searchParams }: PageProps) {
-  const hex = getKeyHexValue(searchParams);
-  const hsl = searchParams.hsl;
-  const keyIndex = searchParams.idx ?? DEFAULTS.values.idx;
-  const steps = searchParams.steps ?? DEFAULTS.values.steps;
-  const maxBright = searchParams.max ?? DEFAULTS.values.max;
-  const minBright = searchParams.min ?? DEFAULTS.values.min;
+  const hexParam = getKeyHexValue(searchParams);
+  const hslParam = searchParams.hsl;
+  const keyIndexParam = searchParams.idx ?? DEFAULTS.values.idx;
+  const stepsParam = searchParams.steps ?? DEFAULTS.values.steps;
+  const maxLightParam = searchParams.max ?? DEFAULTS.values.max;
+  const minLightParam = searchParams.min ?? DEFAULTS.values.min;
 
-  const keyColor = getKeyColor({ hex, hsl });
-  const colorObject = await generateSpectrum(keyColor.hex, steps, keyIndex);
-  // console.log(colorObject);
+  const keyColorInit = getKeyColor({ hex: hexParam, hsl: hslParam });
+  const colorObject = await generateSpectrum(keyColorInit.hex, stepsParam, keyIndexParam);
+  const { colors, keyColor, keyIndex } = colorObject;
 
-  const newHSL = `${keyColor.h}_${keyColor.s}_${keyColor.l}`;
+  const primitiveVariables = generateCSSVariables({ type: "primitive", colors });
+  const semanticVariables = generateCSSVariables({ type: "semantic", color: keyColor });
+  const cssVariables = { ...primitiveVariables, ...semanticVariables };
+
+  const newHSL = `${keyColorInit.h}_${keyColorInit.s}_${keyColorInit.l}`;
 
   return (
-    <main className={classes.main}>
+    <main className={classes.main} style={cssVariables}>
       <ControlPanel
-        hex={keyColor.hex}
+        hex={keyColorInit.hex}
         hsl={newHSL}
-        idx={colorObject.keyIndex.generated.toString()}
-        steps={steps}
-        max={maxBright}
-        min={minBright}
+        idx={keyIndex.generated.toString()}
+        steps={stepsParam}
+        max={maxLightParam}
+        min={minLightParam}
       />
-      <div style={{ backgroundColor: keyColor.hex, transition: "all 200ms" }} />
+      <div style={{ backgroundColor: keyColorInit.hex, transition: "all 200ms" }} />
     </main>
   );
 }

@@ -4,20 +4,29 @@
 }
 
 .hue {
+  --thumb-border: 3px solid transparent;
   --track-background: linear-gradient(
     to right in oklch longer hue,
     oklch(70% 0.3 0) 0%,
     oklch(70% 0.3 0) 100%
   );
-  --thumb-border: 3px solid transparent;
 }
 
 .sat {
-  --track-background: linear-gradient(to right, oklch(60% 0.05 0) 0%, oklch(60% 0.4 0) 100%);
   --thumb-border: 3px solid transparent;
+  --track-background: linear-gradient(
+    to right in oklch,
+    var(--color-primary-desaturated),
+    var(--color-primary-saturated) 80%
+  );
 }
 
 .lit {
-  --track-background: linear-gradient(to right, oklch(5% 0.1 0) 0%, oklch(95% 0.05 0) 100%);
   --thumb-border: 3px solid transparent;
+  --track-background: linear-gradient(
+    to right in oklch,
+    var(--color-primary-darker),
+    var(--color-primary-medium) 50%,
+    var(--color-primary-lighter-desaturated)
+  );
 }

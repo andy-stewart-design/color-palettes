@@ -22,7 +22,7 @@ export default function RangeSlider({ name, value, min, max, onChange, className
   const [formValue, formAction] = useFormState(handleSubmit, normalizedValue);
   const [sliderIsActive, setSliderIsActive] = useState(false);
   const [activeSliderValue, setActiveSliderValue] = useState(normalizedValue);
-  const progress = parseFloat(activeSliderValue) / parseFloat(max);
+  const progress = parseFloat(value) / parseFloat(max);
 
   useEffect(() => {
     const slider = sliderRef.current;
