@@ -19,10 +19,12 @@ export default function RangeSlider({ name, value, min, max, onChange, className
   const numberRef = useRef<HTMLInputElement>(null);
   const normalizedValue = normalizeValue(value, min, max);
 
+  console.log("rendering", name);
+
   const [formValue, formAction] = useFormState(handleSubmit, normalizedValue);
   const [sliderIsActive, setSliderIsActive] = useState(false);
   const [activeSliderValue, setActiveSliderValue] = useState(normalizedValue);
-  const progress = parseFloat(value) / parseFloat(max);
+  const progress = parseFloat(activeSliderValue) / parseFloat(max);
 
   useEffect(() => {
     const slider = sliderRef.current;
@@ -31,6 +33,7 @@ export default function RangeSlider({ name, value, min, max, onChange, className
 
     if (slider.value !== value) slider.value = value;
     if (number.value !== value) number.value = normalizedValue;
+    setActiveSliderValue((current) => (current === value ? current : value));
   }, [value]);
 
   function handleSubmit(prevState: string, formData: FormData) {
@@ -68,7 +71,7 @@ export default function RangeSlider({ name, value, min, max, onChange, className
     const slider = sliderRef.current;
     if (!slider) return;
     slider.value = e.target.value;
-    setActiveSliderValue(e.target.value);
+    setActiveSliderValue(normalizeValue(e.target.value, min, max));
   }
 
   function onInteractionEnd() {
