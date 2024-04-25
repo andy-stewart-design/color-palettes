@@ -1,6 +1,14 @@
 "use client";
 
-import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
+import {
+  ChangeEvent,
+  KeyboardEvent,
+  useEffect,
+  useRef,
+  useState,
+  MouseEvent,
+  TouchEvent,
+} from "react";
 import { useFormState } from "react-dom";
 import classes from "./component.module.css";
 
@@ -12,6 +20,7 @@ type PropTypes = {
   onChange: (name: string, value: string) => void;
   className?: string;
 };
+type InteractionStartEvent = MouseEvent<HTMLInputElement> | TouchEvent<HTMLInputElement>;
 
 export default function RangeSlider({ name, value, min, max, onChange, className }: PropTypes) {
   const formRef = useRef<HTMLFormElement>(null);
@@ -19,12 +28,14 @@ export default function RangeSlider({ name, value, min, max, onChange, className
   const numberRef = useRef<HTMLInputElement>(null);
   const normalizedValue = normalizeValue(value, min, max);
 
-  console.log("rendering", name);
-
   const [formValue, formAction] = useFormState(handleSubmit, normalizedValue);
   const [sliderIsActive, setSliderIsActive] = useState(false);
   const [activeSliderValue, setActiveSliderValue] = useState(normalizedValue);
-  const progress = parseFloat(activeSliderValue) / parseFloat(max);
+
+  const progress = (() => {
+    const progressValue = sliderIsActive ? activeSliderValue : value;
+    return parseFloat(progressValue) / parseFloat(max);
+  })();
 
   useEffect(() => {
     const slider = sliderRef.current;
@@ -33,7 +44,6 @@ export default function RangeSlider({ name, value, min, max, onChange, className
 
     if (slider.value !== value) slider.value = value;
     if (number.value !== value) number.value = normalizedValue;
-    setActiveSliderValue((current) => (current === value ? current : value));
   }, [value]);
 
   function handleSubmit(prevState: string, formData: FormData) {
@@ -63,18 +73,18 @@ export default function RangeSlider({ name, value, min, max, onChange, className
     }
   }
 
-  function onInteractionStart() {
+  function handleInteractionStart(e: InteractionStartEvent) {
+    const newValue = normalizeValue(e.currentTarget.value, min, max);
+    setActiveSliderValue(newValue);
     setSliderIsActive(true);
   }
 
   function handleSliderChange(e: ChangeEvent<HTMLInputElement>) {
-    const slider = sliderRef.current;
-    if (!slider) return;
-    slider.value = e.target.value;
-    setActiveSliderValue(normalizeValue(e.target.value, min, max));
+    const newValue = normalizeValue(e.target.value, min, max);
+    setActiveSliderValue(newValue);
   }
 
-  function onInteractionEnd() {
+  function handleInteractionEnd() {
     formRef.current?.requestSubmit();
     setSliderIsActive(false);
   }
@@ -123,12 +133,12 @@ export default function RangeSlider({ name, value, min, max, onChange, className
           max={max}
           step="0.01"
           defaultValue={formValue}
-          onMouseDown={onInteractionStart}
-          onTouchStart={onInteractionStart}
+          onMouseDown={handleInteractionStart}
+          onTouchStart={handleInteractionStart}
           onKeyDown={handleSliderKeyDown}
           onChange={handleSliderChange}
-          onMouseUp={onInteractionEnd}
-          onTouchEnd={onInteractionEnd}
+          onMouseUp={handleInteractionEnd}
+          onTouchEnd={handleInteractionEnd}
         />
         <div className={classes.number}>
           <input

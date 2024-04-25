@@ -5,7 +5,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import HexController from "./HexController";
 import HSLController from "./HSLController";
 import { NumberInput } from "@/components/ds/inputs";
-import { DEFAULTS, type SEARCH_PARAMS } from "@/app/constants";
 import classes from "./component.module.css";
 
 type PropTypes = {
@@ -18,65 +17,62 @@ type PropTypes = {
 };
 
 export default function ControlPanel(props: PropTypes) {
-  const currentParams = { ...props, hex: props.hex.replace("#", "") };
+  const systemParams = { ...props, hex: props.hex.replace("#", "") };
 
-  const [currentValues, setCurrentValues] = useOptimistic(currentParams);
   const router = useRouter();
   const currentSearchParams = useSearchParams();
+  const [optimisticParams, setOptimisticParams] = useOptimistic(systemParams);
 
   function handleChange(name: string, value: string) {
     const params = new URLSearchParams();
-    let newParams = { ...currentValues, [name]: value };
+    let nextParams = { ...optimisticParams, [name]: value };
 
-    Object.entries(newParams).forEach(([key, value]) => {
-      const param = key as SEARCH_PARAMS;
-      if (value !== DEFAULTS.values[param]) params.set(key, value);
-    });
-
-    if (name === "hex") {
-      params.delete("hsl");
-    } else if (name === "hsl") {
-      params.delete("hex");
+    if (name === "hex" || name === "hsl") {
+      params.set(name, value);
     } else {
-      const iterableParams = Object.fromEntries(currentSearchParams);
-      const paramKeys = Object.keys(iterableParams) as Array<SEARCH_PARAMS>;
+      Object.entries(nextParams).forEach(([key, value]) => {
+        params.set(key, value);
+      });
 
-      if (!paramKeys.includes("hex")) params.delete("hex");
-      if (!paramKeys.includes("hsl")) params.delete("hsl");
+      if (currentSearchParams.get("hsl")) {
+        params.delete("hex");
+      } else {
+        params.delete("hsl");
+      }
 
       if (name === "steps") {
         const stepsAsNumber = parseFloat(value);
-        const idxAsNumber = parseFloat(currentValues.idx);
-        if (idxAsNumber > stepsAsNumber) {
-          params.set("idx", value);
-          newParams = { ...currentValues, [name]: value, idx: value };
+        const idxAsNumber = parseFloat(nextParams.idx);
+        if (idxAsNumber + 1 >= stepsAsNumber) {
+          params.set("idx", `${idxAsNumber - 1}`);
+          nextParams = { ...optimisticParams, [name]: value, idx: value };
         }
       }
     }
 
     startTransition(() => {
-      setCurrentValues(newParams);
+      setOptimisticParams(nextParams);
       router.push(`/?${params.toString()}`);
     });
   }
 
-  const [h, s, l] = currentValues.hsl.split("_");
+  const [h, s, l] = optimisticParams.hsl.split("_");
 
   return (
     <div className={classes.sidebar}>
-      <HexController name="hex" value={currentValues.hex} onChange={handleChange} />
+      <HexController name="hex" value={optimisticParams.hex} onChange={handleChange} />
       <HSLController h={h} s={s} l={l} onChange={handleChange} />
       <NumberInput
         name="idx"
         label="Key Index"
-        value={currentValues.idx}
-        min="3"
+        value={optimisticParams.idx}
+        min="0"
         max={props.steps}
         onChange={handleChange}
       />
       <NumberInput
         name="steps"
-        value={currentValues.steps}
+        value={optimisticParams.steps}
         min="3"
         max="19"
         onChange={handleChange}
@@ -84,7 +80,7 @@ export default function ControlPanel(props: PropTypes) {
       <NumberInput
         name="min"
         label="Min Brightness"
-        value={currentValues.min}
+        value={optimisticParams.min}
         min="5"
         max="20"
         onChange={handleChange}
@@ -92,7 +88,7 @@ export default function ControlPanel(props: PropTypes) {
       <NumberInput
         name="max"
         label="Max Brightness"
-        value={currentValues.max}
+        value={optimisticParams.max}
         min="85"
         max="99"
         onChange={handleChange}

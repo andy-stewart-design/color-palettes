@@ -4,13 +4,18 @@ import { generateColorNames, generateColorName } from "@/utils/generate-color-na
 
 export const okhsl = converter("okhsl");
 
-export async function generateSpectrum(
-  hexParam: string,
-  stepsParam: string,
-  keyIndexParam: string | undefined
-) {
-  const keyColor = okhsl(hexParam);
-  const stepsAsNumber = parseFloat(stepsParam);
+interface GenerateSpectrumProps {
+  hex: string;
+  steps: string;
+  index: string | undefined;
+  min: string;
+  max: string;
+}
+
+export async function generateSpectrum(systemParams: GenerateSpectrumProps) {
+  const keyColor = okhsl(systemParams.hex);
+  const minAsNumber = parseFloat(systemParams.min) / 100;
+  const maxAsNumber = parseFloat(systemParams.max) / 100;
 
   if (!keyColor) throw new Error("Invalid color");
 
@@ -18,30 +23,30 @@ export async function generateSpectrum(
   const keySaturation = keyColor.s;
   const keyLightness = keyColor.l;
 
-  const numSteps = stepsAsNumber ? stepsAsNumber : 11;
-  const lightnessDark = keyLightness < 0.12 ? keyLightness : 0.12;
-  const lightnessBright = keyLightness > 0.94 ? keyLightness : 0.94;
-  const lightnessRange = lightnessBright - lightnessDark;
+  const numSteps = parseFloat(systemParams.steps);
+  const lightnessMin = keyLightness < minAsNumber ? keyLightness : minAsNumber;
+  const lightnessMax = keyLightness > maxAsNumber ? keyLightness : maxAsNumber;
+  const lightnessRange = lightnessMax - lightnessMin;
 
   const keyIndexGenerated = generateKeyIndex({
     keyValue: keyLightness,
-    min: lightnessDark,
+    min: lightnessMin,
     spread: lightnessRange,
     steps: numSteps,
   });
 
-  const keyIndexCurrent = keyIndexParam ? parseInt(keyIndexParam) : keyIndexGenerated;
+  const keyIndexCurrent = systemParams.index ? parseInt(systemParams.index) : keyIndexGenerated;
 
   const numStepsBeforeKey = keyIndexCurrent;
   const lowerRange = range(numStepsBeforeKey).map((index) => {
-    const differential = lightnessBright - keyLightness;
+    const differential = lightnessMax - keyLightness;
     const step = differential / numStepsBeforeKey;
-    return lightnessBright - index * step;
+    return lightnessMax - index * step;
   });
 
   const numStepsAfterKey = numSteps - keyIndexCurrent - 1;
   const upperRange = range(numStepsAfterKey).map((index) => {
-    const differential = keyLightness - lightnessDark;
+    const differential = keyLightness - lightnessMin;
     const step = differential / numStepsAfterKey;
     return keyLightness - (index + 1) * step;
   });
@@ -69,7 +74,7 @@ export async function generateSpectrum(
   });
 
   const name = (await generateColorName(colors[keyIndexCurrent])) as string;
-  const intergerNames = generateColorNames(stepsAsNumber);
+  const intergerNames = generateColorNames(numSteps);
 
   return {
     colors: {
@@ -78,14 +83,18 @@ export async function generateSpectrum(
       intergerName: intergerNames,
     },
     keyColor: {
-      hex: hexParam,
+      hex: systemParams.hex,
       raw: keyColor,
       intergerName: intergerNames[keyIndexCurrent],
       name,
     },
     keyIndex: {
-      current: keyIndexCurrent,
-      generated: keyIndexGenerated,
+      current: keyIndexCurrent.toString(),
+      generated: keyIndexGenerated.toString(),
+    },
+    lightness: {
+      min: (lightnessMin * 100).toString(),
+      max: (lightnessMax * 100).toString(),
     },
   };
 }

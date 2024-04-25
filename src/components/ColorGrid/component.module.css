@@ -1,0 +1,9 @@
+.grid {
+  /* flex-grow: 1; */
+  isolation: isolate;
+
+  display: flex;
+  flex-direction: column;
+  background: var(--color-primary-dark);
+  transition: background 500ms var(--ease-out-3, ease-out);
+}

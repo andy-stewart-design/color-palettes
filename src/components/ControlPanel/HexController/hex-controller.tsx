@@ -65,7 +65,7 @@ export default function HexController({ name, value, onChange }: PropTypes) {
 function handleChange(e: ChangeEvent<HTMLInputElement>) {
   const newValue = e.target.value;
 
-  console.log(newValue.charAt(0) === "#");
+  // console.log(newValue.charAt(0) === "#");
 
   if (newValue.charAt(0) === "#") {
     const trimmedValue = newValue.replace("#", "");

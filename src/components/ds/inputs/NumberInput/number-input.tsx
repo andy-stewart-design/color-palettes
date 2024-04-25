@@ -65,7 +65,6 @@ export default function NumberInput({
       e.preventDefault();
       if (currentValue !== previousValue) {
         formRef.current?.requestSubmit();
-        console.log("submit");
       }
     } else if (e.key === ".") {
       e.preventDefault();

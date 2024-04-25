@@ -24,10 +24,10 @@ export const DEFAULTS = {
   values: {
     hex: "#4AA5B7",
     hsl: "50_50_50",
-    idx: "4",
+    idx: undefined,
     steps: "11",
     min: "12",
-    max: "95",
+    max: "94",
   },
 };
 

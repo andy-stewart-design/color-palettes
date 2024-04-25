@@ -1,3 +1,4 @@
+// TODO: Resolve inconsistencies with color generation
 // TODO: Update color generator function to use min and max brightness values
 
 import { cookies } from "next/headers";
@@ -7,6 +8,7 @@ import { generateSpectrum, okhsl } from "@/utils/generate-spectrum";
 import { DEFAULTS } from "./constants";
 import classes from "./page.module.css";
 import { generateCSSVariables } from "@/utils/generate-css-vars";
+import ColorGrid from "@/components/ColorGrid";
 
 type PageSearchParams = {
   hex?: string;
@@ -24,14 +26,20 @@ type PageProps = {
 export default async function Home({ searchParams }: PageProps) {
   const hexParam = getKeyHexValue(searchParams);
   const hslParam = searchParams.hsl;
-  const keyIndexParam = searchParams.idx ?? DEFAULTS.values.idx;
+  const keyIndexParam = searchParams.idx;
   const stepsParam = searchParams.steps ?? DEFAULTS.values.steps;
   const maxLightParam = searchParams.max ?? DEFAULTS.values.max;
   const minLightParam = searchParams.min ?? DEFAULTS.values.min;
 
   const keyColorInit = getKeyColor({ hex: hexParam, hsl: hslParam });
-  const colorObject = await generateSpectrum(keyColorInit.hex, stepsParam, keyIndexParam);
-  const { colors, keyColor, keyIndex } = colorObject;
+  const colorObject = await generateSpectrum({
+    hex: keyColorInit.hex,
+    steps: stepsParam,
+    index: keyIndexParam,
+    min: minLightParam,
+    max: maxLightParam,
+  });
+  const { colors, keyColor, keyIndex, lightness } = colorObject;
 
   const primitiveVariables = generateCSSVariables({ type: "primitive", colors });
   const semanticVariables = generateCSSVariables({ type: "semantic", color: keyColor });
@@ -44,12 +52,13 @@ export default async function Home({ searchParams }: PageProps) {
       <ControlPanel
         hex={keyColorInit.hex}
         hsl={newHSL}
-        idx={keyIndex.generated.toString()}
-        steps={stepsParam}
-        max={maxLightParam}
-        min={minLightParam}
+        idx={keyIndex.current}
+        steps={colors.hex.length.toString()}
+        max={lightness.max}
+        min={lightness.min}
       />
-      <div style={{ backgroundColor: keyColorInit.hex, transition: "all 200ms" }} />
+      {/* <div style={{ backgroundColor: keyColorInit.hex, transition: "all 200ms" }} /> */}
+      <ColorGrid colors={colors.hex} names={colors.intergerName} />
     </main>
   );
 }
