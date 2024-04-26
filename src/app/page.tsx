@@ -1,6 +1,3 @@
-// TODO: Resolve inconsistencies with color generation
-// TODO: Update color generator function to use min and max brightness values
-
 import { cookies } from "next/headers";
 import { formatHex } from "culori";
 import ControlPanel from "@/components/ControlPanel";
@@ -45,19 +42,22 @@ export default async function Home({ searchParams }: PageProps) {
   const semanticVariables = generateCSSVariables({ type: "semantic", color: keyColor });
   const cssVariables = { ...primitiveVariables, ...semanticVariables };
 
-  const newHSL = `${keyColorInit.h}_${keyColorInit.s}_${keyColorInit.l}`;
+  const nextHSL = `${keyColorInit.h}_${keyColorInit.s}_${keyColorInit.l}`;
+  const nextSteps = {
+    default: DEFAULTS.values.steps,
+    current: stepsParam,
+  };
 
   return (
     <main className={classes.main} style={cssVariables}>
       <ControlPanel
-        hex={keyColorInit.hex}
-        hsl={newHSL}
-        idx={keyIndex.current}
-        steps={colors.hex.length.toString()}
+        hex={keyColor.hex}
+        hsl={nextHSL}
+        idx={keyIndex}
+        steps={nextSteps}
         max={lightness.max}
         min={lightness.min}
       />
-      {/* <div style={{ backgroundColor: keyColorInit.hex, transition: "all 200ms" }} /> */}
       <ColorGrid colors={colors.hex} names={colors.intergerName} />
     </main>
   );

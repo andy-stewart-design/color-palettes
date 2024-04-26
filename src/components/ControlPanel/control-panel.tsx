@@ -6,19 +6,19 @@ import HexController from "./HexController";
 import HSLController from "./HSLController";
 import { NumberInput } from "@/components/ds/inputs";
 import classes from "./component.module.css";
+import { DEFAULTS, SEARCH_PARAMS } from "@/app/constants";
 
 type PropTypes = {
   hex: string;
   hsl: string;
-  idx: string;
-  steps: string;
+  idx: { default: string; current: string };
+  steps: { default: string; current: string };
   min: string;
   max: string;
 };
 
 export default function ControlPanel(props: PropTypes) {
-  const systemParams = { ...props, hex: props.hex.replace("#", "") };
-
+  const systemParams = formatParams(props);
   const router = useRouter();
   const currentSearchParams = useSearchParams();
   const [optimisticParams, setOptimisticParams] = useOptimistic(systemParams);
@@ -27,24 +27,33 @@ export default function ControlPanel(props: PropTypes) {
     const params = new URLSearchParams();
     let nextParams = { ...optimisticParams, [name]: value };
 
-    if (name === "hex" || name === "hsl") {
+    if (name === DEFAULTS.params.hex || name === DEFAULTS.params.hsl) {
+      const currentSteps = currentSearchParams.get(DEFAULTS.params.steps);
       params.set(name, value);
+      if (currentSteps) params.set(DEFAULTS.params.steps, currentSteps);
     } else {
       Object.entries(nextParams).forEach(([key, value]) => {
-        params.set(key, value);
+        const param = key as SEARCH_PARAMS;
+        const systemValue = props[param];
+        if (typeof systemValue === "object") {
+          if (value !== systemValue.default) {
+            params.set(key, value);
+          }
+        } else params.set(key, value);
       });
 
-      if (currentSearchParams.get("hsl")) {
-        params.delete("hex");
+      if (currentSearchParams.get(DEFAULTS.params.hsl)) {
+        params.delete(DEFAULTS.params.hex);
       } else {
-        params.delete("hsl");
+        params.delete(DEFAULTS.params.hsl);
       }
 
-      if (name === "steps") {
+      if (name === DEFAULTS.params.steps) {
         const stepsAsNumber = parseFloat(value);
         const idxAsNumber = parseFloat(nextParams.idx);
+
         if (idxAsNumber + 1 >= stepsAsNumber) {
-          params.set("idx", `${idxAsNumber - 1}`);
+          params.set(DEFAULTS.params.idx, `${idxAsNumber - 1}`);
           nextParams = { ...optimisticParams, [name]: value, idx: value };
         }
       }
@@ -67,7 +76,7 @@ export default function ControlPanel(props: PropTypes) {
         label="Key Index"
         value={optimisticParams.idx}
         min="0"
-        max={props.steps}
+        max={props.steps.current}
         onChange={handleChange}
       />
       <NumberInput
@@ -78,14 +87,6 @@ export default function ControlPanel(props: PropTypes) {
         onChange={handleChange}
       />
       <NumberInput
-        name="min"
-        label="Min Brightness"
-        value={optimisticParams.min}
-        min="5"
-        max="20"
-        onChange={handleChange}
-      />
-      <NumberInput
         name="max"
         label="Max Brightness"
         value={optimisticParams.max}
@@ -93,6 +94,28 @@ export default function ControlPanel(props: PropTypes) {
         max="99"
         onChange={handleChange}
       />
+      <NumberInput
+        name="min"
+        label="Min Brightness"
+        value={optimisticParams.min}
+        min="5"
+        max="20"
+        onChange={handleChange}
+      />
     </div>
   );
+}
+
+function formatParams(systemParams: PropTypes) {
+  const systemParamsArray = Object.entries(systemParams);
+  const currentParamsArray = systemParamsArray.map(([key, value]) => {
+    if (typeof value === "object") {
+      return [key, value.current];
+    } else if (key === DEFAULTS.params.hex) {
+      return [key, value.replace("#", "")];
+    } else {
+      return [key, value];
+    }
+  });
+  return Object.fromEntries(currentParamsArray) as Record<SEARCH_PARAMS, string>;
 }

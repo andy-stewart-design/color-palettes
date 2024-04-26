@@ -90,7 +90,7 @@ export async function generateSpectrum(systemParams: GenerateSpectrumProps) {
     },
     keyIndex: {
       current: keyIndexCurrent.toString(),
-      generated: keyIndexGenerated.toString(),
+      default: keyIndexGenerated.toString(),
     },
     lightness: {
       min: (lightnessMin * 100).toString(),
