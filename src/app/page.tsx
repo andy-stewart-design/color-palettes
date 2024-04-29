@@ -25,8 +25,8 @@ export default async function Home({ searchParams }: PageProps) {
   const hslParam = searchParams.hsl;
   const keyIndexParam = searchParams.idx;
   const stepsParam = searchParams.steps ?? DEFAULTS.values.steps;
-  const maxLightParam = searchParams.max ?? DEFAULTS.values.max;
-  const minLightParam = searchParams.min ?? DEFAULTS.values.min;
+  const maxLightParam = searchParams.max;
+  const minLightParam = searchParams.min;
 
   const keyColorInit = getKeyColor({ hex: hexParam, hsl: hslParam });
   const colorObject = await generateSpectrum({
@@ -55,8 +55,8 @@ export default async function Home({ searchParams }: PageProps) {
         hsl={nextHSL}
         idx={keyIndex}
         steps={nextSteps}
-        max={lightness.max}
         min={lightness.min}
+        max={lightness.max}
       />
       <ColorGrid colors={colors.hex} names={colors.intergerName} />
     </main>

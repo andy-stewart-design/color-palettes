@@ -25,6 +25,8 @@ export default function HexController({ name, value, onChange }: PropTypes) {
   }, [value]);
 
   function handleSubmit(__prevState: string, formData: FormData) {
+    console.log({ prev: __prevState, next: Object.fromEntries(formData) });
+
     const hexData = formData.get(name);
     if (hexData === null) return `${hexData}`;
 

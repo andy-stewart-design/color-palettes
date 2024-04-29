@@ -1,6 +1,7 @@
 import { formatHex, converter, Okhsl } from "culori";
 import { range } from "@/utils/arrays";
 import { generateColorNames, generateColorName } from "@/utils/generate-color-names";
+import { DEFAULTS } from "@/app/constants";
 
 export const okhsl = converter("okhsl");
 
@@ -8,14 +9,12 @@ interface GenerateSpectrumProps {
   hex: string;
   steps: string;
   index: string | undefined;
-  min: string;
-  max: string;
+  min: string | undefined;
+  max: string | undefined;
 }
 
 export async function generateSpectrum(systemParams: GenerateSpectrumProps) {
   const keyColor = okhsl(systemParams.hex);
-  const minAsNumber = parseFloat(systemParams.min) / 100;
-  const maxAsNumber = parseFloat(systemParams.max) / 100;
 
   if (!keyColor) throw new Error("Invalid color");
 
@@ -24,8 +23,8 @@ export async function generateSpectrum(systemParams: GenerateSpectrumProps) {
   const keyLightness = keyColor.l;
 
   const numSteps = parseFloat(systemParams.steps);
-  const lightnessMin = keyLightness < minAsNumber ? keyLightness : minAsNumber;
-  const lightnessMax = keyLightness > maxAsNumber ? keyLightness : maxAsNumber;
+  const lightnessMin = generateMin(systemParams.min, keyLightness);
+  const lightnessMax = generateMax(systemParams.max, keyLightness);
   const lightnessRange = lightnessMax - lightnessMin;
 
   const keyIndexGenerated = generateKeyIndex({
@@ -127,4 +126,18 @@ function generateKeyIndex(props: GenerateKeyIndexProps) {
 
   if (keyIndex === undefined) keyIndex = 0;
   return keyIndex;
+}
+
+function generateMin(param: string | undefined, generated: number) {
+  const defaultAsNumber = parseFloat(DEFAULTS.values.min) / 100;
+  if (param) return parseFloat(param) / 100;
+  else if (generated < defaultAsNumber) return generated;
+  else return defaultAsNumber;
+}
+
+function generateMax(param: string | undefined, generated: number) {
+  const defaultAsNumber = parseFloat(DEFAULTS.values.max) / 100;
+  if (param) return parseFloat(param) / 100;
+  else if (generated > defaultAsNumber) return generated;
+  else return defaultAsNumber;
 }
