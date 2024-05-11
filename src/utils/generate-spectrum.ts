@@ -1,9 +1,8 @@
-import { formatHex, converter, Okhsl } from "culori";
 import { range } from "@/utils/arrays";
 import { generateColorNames, generateColorName } from "@/utils/generate-color-names";
-import { DEFAULTS } from "@/app/constants";
-
-export const okhsl = converter("okhsl");
+import { DEFAULTS } from "@/constants";
+import { okhsl, formatHex } from "./culori";
+import type { Okhsl } from "culori";
 
 interface GenerateSpectrumProps {
   hex: string;
@@ -72,7 +71,7 @@ export async function generateSpectrum(systemParams: GenerateSpectrumProps) {
     });
   });
 
-  const name = (await generateColorName(colors[keyIndexCurrent])) as string;
+  const name = await generateColorName(colors[keyIndexCurrent]);
   const intergerNames = generateColorNames(numSteps);
 
   return {
@@ -98,7 +97,9 @@ export async function generateSpectrum(systemParams: GenerateSpectrumProps) {
   };
 }
 
+// ----------------------------------------------------------------------
 // HELPER FUNCTIONS
+// ----------------------------------------------------------------------
 interface GenerateKeyIndexProps {
   steps: number;
   spread: number;
@@ -129,14 +130,14 @@ function generateKeyIndex(props: GenerateKeyIndexProps) {
 }
 
 function generateMin(param: string | undefined, generated: number) {
-  const defaultAsNumber = parseFloat(DEFAULTS.values.min) / 100;
+  const defaultAsNumber = parseFloat(DEFAULTS.min) / 100;
   if (param) return parseFloat(param) / 100;
   else if (generated < defaultAsNumber) return generated;
   else return defaultAsNumber;
 }
 
 function generateMax(param: string | undefined, generated: number) {
-  const defaultAsNumber = parseFloat(DEFAULTS.values.max) / 100;
+  const defaultAsNumber = parseFloat(DEFAULTS.max) / 100;
   if (param) return parseFloat(param) / 100;
   else if (generated > defaultAsNumber) return generated;
   else return defaultAsNumber;

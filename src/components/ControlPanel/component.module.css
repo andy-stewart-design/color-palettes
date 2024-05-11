@@ -1,8 +1,7 @@
-.sidebar {
+.section {
   display: grid;
-  grid-auto-rows: min-content;
   gap: 1rem;
   padding-block: 1.5rem;
-  padding-inline: 2rem;
-  border-right: 1px solid oklch(0 0 0 / 0.2);
+  padding-inline: 1.5rem;
+  border-bottom: 1px solid color-mix(in srgb, black 15%, transparent);
 }

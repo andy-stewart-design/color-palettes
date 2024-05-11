@@ -1,0 +1,10 @@
+.input {
+  height: var(--input-height);
+  padding-inline: 0.75rem;
+  border: 1px solid color-mix(in srgb, black 15%, transparent);
+  border-radius: 0.1875rem;
+
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.0125em;
+}

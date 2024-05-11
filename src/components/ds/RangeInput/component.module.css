@@ -1,0 +1,51 @@
+.slider {
+  /* display: grid;
+  grid-template-areas:
+    "label output"
+    "track track";
+  grid-template-columns: 1fr auto;
+  max-width: 300px; */
+
+  .metadata {
+    display: grid;
+    grid-template-columns: 1fr min-content;
+  }
+
+  .output {
+  }
+
+  .track {
+    display: relative;
+    position: relative;
+    padding: 1rem 0;
+
+    /* track line */
+    &:before {
+      /* translate: 0 -50%; */
+      content: "";
+      display: block;
+      position: absolute;
+      width: 100%;
+      height: 0.25rem;
+      translate: 0 -50%;
+      background: gray;
+    }
+  }
+
+  .thumb {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    background: black;
+    border: 2px solid white;
+    forced-color-adjust: none;
+
+    &[data-dragging] {
+      background: blue;
+    }
+
+    &[data-focus-visible] {
+      outline: 2px solid blue;
+    }
+  }
+}

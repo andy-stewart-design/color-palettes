@@ -1,4 +1,7 @@
+import { z } from "zod";
 import { Okhsl, formatHex } from "culori";
+
+const CSSVariableRecord = z.record(z.string().regex(/^--/), z.string().regex(/^#/));
 
 type GeneratePrimitiveCSSVariablesProps = {
   type: "primitive";
@@ -66,6 +69,6 @@ export function generateCSSVariables(props: GenerateCSSVariablesProps) {
       return { ...acc, ...style };
     }, {});
 
-    return variables as Record<string, string>;
+    return CSSVariableRecord.parse(variables);
   }
 }

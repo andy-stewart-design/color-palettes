@@ -1,0 +1,10 @@
+.formGroup {
+  grid-template-columns: 1fr max-content;
+  align-items: center;
+}
+
+.inputGroup {
+  height: var(--input-height);
+  display: grid;
+  grid-template-columns: 2rem 5rem 2rem;
+}

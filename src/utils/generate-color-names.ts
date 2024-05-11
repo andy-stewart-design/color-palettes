@@ -1,14 +1,32 @@
+import { z } from "zod";
+
+const ColorNameSchema = z.object({
+  value: z.string(),
+  closest_named_hex: z.string().regex(/^#/),
+  exact_match_name: z.boolean(),
+  distance: z.number(),
+});
+
 export async function generateColorName(hex: string) {
   const baseURL = "https://www.thecolorapi.com/id?hex=";
 
-  try {
-    const response = await fetch(baseURL + hex.replace("#", ""));
-    if (response.status === 400) throw new Error("Invalid hex code");
-    const data = await response.json();
-    return data.name.value;
-  } catch (error) {
-    console.error(error);
+  async function fetchColorName(hex: string) {
+    try {
+      const response = await fetch(baseURL + hex.replace("#", ""));
+      if (response.status !== 200) throw new Error("Invalid hex code");
+
+      const data = await response.json();
+      const name = ColorNameSchema.parse(data.name);
+
+      return name.value;
+    } catch (error) {
+      console.error(error);
+    }
   }
+
+  const name = await fetchColorName(hex);
+  if (!name) throw new Error("Failed to fetch color name");
+  return name;
 }
 
 export function generateColorNames(n: number) {
