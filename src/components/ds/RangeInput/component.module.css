@@ -1,10 +1,5 @@
 .slider {
-  /* display: grid;
-  grid-template-areas:
-    "label output"
-    "track track";
-  grid-template-columns: 1fr auto;
-  max-width: 300px; */
+  --track-bg: black;
 
   .metadata {
     display: grid;
@@ -12,12 +7,17 @@
   }
 
   .output {
+    font-size: 0.8125rem;
+  }
+
+  .trackWrap {
+    padding-inline: 0.875rem;
   }
 
   .track {
     display: relative;
     position: relative;
-    padding: 1rem 0;
+    padding: 0.875rem 0;
 
     /* track line */
     &:before {
@@ -25,23 +25,25 @@
       content: "";
       display: block;
       position: absolute;
-      width: 100%;
-      height: 0.25rem;
+      left: -0.875rem;
+      right: -0.875rem;
+      height: 100%;
       translate: 0 -50%;
-      background: gray;
+      background: var(--track-bg);
+      outline: 1px solid rgb(0 0 0 / 0.1);
+      border-radius: 100vmax;
     }
   }
 
   .thumb {
-    width: 1.5rem;
-    height: 1.5rem;
+    width: 0.75rem;
+    height: 0.75rem;
     border-radius: 50%;
-    background: black;
-    border: 2px solid white;
-    forced-color-adjust: none;
+    background: white;
+    box-shadow: 0px 2px 12px -2px rgb(0 0 0 / 0.35);
 
     &[data-dragging] {
-      background: blue;
+      outline: 4px solid rgb(255 255 255 / 0.35);
     }
 
     &[data-focus-visible] {

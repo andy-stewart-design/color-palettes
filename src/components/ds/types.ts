@@ -10,4 +10,5 @@ export interface InputProps {
 export interface NumberInputProps extends InputProps {
   min: number | string;
   max: number | string;
+  className?: string;
 }

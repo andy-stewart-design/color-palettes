@@ -14,6 +14,7 @@ export default function RangeInput({
   min,
   max,
   form,
+  className,
 }: NumberInputProps) {
   const systemValueAsNumber = parseFloat(systemValue);
   const [key, setCurrentValue] = useSynchronizedState(systemValueAsNumber);
@@ -32,7 +33,7 @@ export default function RangeInput({
   return (
     <Slider
       key={key}
-      className={cn(classes.slider, shared.formGroup)}
+      className={cn(classes.slider, shared.formGroup, className)}
       defaultValue={systemValueAsNumber}
       minValue={Number(min)}
       maxValue={Number(max)}
@@ -46,9 +47,11 @@ export default function RangeInput({
         </Label>
         <SliderOutput className={classes.output} />
       </div>
-      <SliderTrack className={classes.track}>
-        <SliderThumb name={name} className={classes.thumb} onKeyDown={handleKeyUp} />
-      </SliderTrack>
+      <div className={classes.trackWrap}>
+        <SliderTrack className={classes.track}>
+          <SliderThumb name={name} className={classes.thumb} onKeyDown={handleKeyUp} />
+        </SliderTrack>
+      </div>
     </Slider>
   );
 }

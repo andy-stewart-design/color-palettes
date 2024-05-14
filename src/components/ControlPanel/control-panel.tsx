@@ -71,6 +71,7 @@ export default function ControlPanel(props: PropTypes) {
           min="0"
           max="360"
           form={formRef}
+          className={classes.hue}
         />
         <RangeInput
           name={PARAMS.saturation}
@@ -78,13 +79,15 @@ export default function ControlPanel(props: PropTypes) {
           min="0"
           max="100"
           form={formRef}
+          className={classes.saturation}
         />
         <RangeInput
           name={PARAMS.lightness}
           value={optimisticValues.lightness}
           min="0"
-          max="100"
+          max="99.5"
           form={formRef}
+          className={classes.lightness}
         />
       </div>
       <div className={classes.section}>

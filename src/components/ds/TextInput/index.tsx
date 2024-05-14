@@ -10,6 +10,13 @@ export default function TextInput({ name, label, value: systemValue, form }: Inp
   const [key, setCurrentValue] = useSynchronizedState(systemValue);
   const displayLabel = label ?? name;
 
+  function handleKeyDown(event: KeyboardEvent<HTMLInputElement>) {
+    if (event.key.length > 1) return;
+
+    const invalidCharacters = /[^0-9a-fA-F]/gm;
+    if (event.key.match(invalidCharacters)) event.preventDefault();
+  }
+
   function handleKeyUp(event: KeyboardEvent<HTMLInputElement>) {
     if (event.key === "Enter") {
       event.preventDefault();
@@ -23,13 +30,16 @@ export default function TextInput({ name, label, value: systemValue, form }: Inp
       name={name}
       defaultValue={systemValue}
       onChange={setCurrentValue}
+      onKeyDown={handleKeyDown}
       onKeyUp={handleKeyUp}
       className={shared.formGroup}
     >
       <Label className={shared.label}>
         {displayLabel} {DEV && <span className={shared.resetCount}>Resets: {key}</span>}
       </Label>
-      <Input className={classes.input} data-1p-ignore data-lpignore />
+      <div className={classes.inputWrap}>
+        <Input className={classes.input} data-1p-ignore data-lpignore />
+      </div>
     </TextField>
   );
 }
