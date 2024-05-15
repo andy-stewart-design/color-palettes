@@ -11,7 +11,7 @@ export function useSynchronizedState(
   if (previousValue !== systemValue) {
     setPreviousValue(systemValue);
     if (currentValue !== systemValue) {
-      console.log("resetting text input");
+      console.log("resetting input");
       setCurrentValue(systemValue);
       setKey(key + 1);
     }

@@ -11,10 +11,15 @@ export default function TextInput({ name, label, value: systemValue, form }: Inp
   const displayLabel = label ?? name;
 
   function handleKeyDown(event: KeyboardEvent<HTMLInputElement>) {
-    if (event.key.length > 1) return;
+    const selectedText = document.getSelection()?.toString();
+    const textIsSelected = selectedText && selectedText.length > 0;
+
+    if (event.key.length > 1 || event.metaKey || textIsSelected) return;
 
     const invalidCharacters = /[^0-9a-fA-F]/gm;
-    if (event.key.match(invalidCharacters)) event.preventDefault();
+    const keyIsInvalid = event.key.match(invalidCharacters);
+    const valueIsMaxLength = event.currentTarget.value.length + 1 > 6;
+    if (keyIsInvalid || valueIsMaxLength) event.preventDefault();
   }
 
   function handleKeyUp(event: KeyboardEvent<HTMLInputElement>) {

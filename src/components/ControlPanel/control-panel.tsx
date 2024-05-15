@@ -34,10 +34,13 @@ export default function ControlPanel(props: PropTypes) {
   function handleSubmit(_: string, nextFormData: FormData) {
     const formData = compare(optimisticValues, nextFormData);
 
-    if (formData.diff.length === 0) {
+    const diffArrayIsEmpty = formData.diff.length === 0;
+    const diffValueIsEmpty = !diffArrayIsEmpty && formData.diff.at(0)?.value === "";
+
+    if (diffArrayIsEmpty) {
       setOptimisticValues(formData.next);
       return JSON.stringify(formData.next);
-    } else if (formData.diff[0].value === "") {
+    } else if (diffValueIsEmpty) {
       setOptimisticValues(formData.next);
       return JSON.stringify(formData.previous);
     } else if (formData.diff.length > 1) {
@@ -118,7 +121,10 @@ export default function ControlPanel(props: PropTypes) {
 
 function compare(prevData: SystemParams, nextData: FormData) {
   const prevObject = SystemParamsSchema.parse(prevData);
-  const nextObject = SystemParamsSchema.parse(Object.fromEntries(nextData));
+
+  const nextDataObject = SystemParamsSchema.parse(Object.fromEntries(nextData));
+  const formattedHex = formatHexParam(nextDataObject.hex);
+  const nextObject = { ...nextDataObject, hex: formattedHex };
 
   const prevArray = Object.entries(prevObject);
   const nextArray = Object.entries(nextObject);
@@ -189,4 +195,22 @@ function setParams(
   } else params = new URLSearchParams(currentParams);
 
   return params;
+}
+
+function formatHexParam(hex: string): string {
+  let formattedValue: string | undefined;
+
+  if (hex.length === 1) {
+    formattedValue = `${hex}${hex}${hex}${hex}${hex}${hex}`;
+  } else if (hex.length === 3) {
+    formattedValue = `${hex[0]}${hex[0]}${hex[1]}${hex[1]}${hex[2]}${hex[2]}`;
+  } else if (hex.length === 4) {
+    formattedValue = `${hex}${hex[3]}${hex[3]}`;
+  } else if (hex.length === 5) {
+    formattedValue = `${hex}${hex[4]}`;
+  } else if (hex.length > 6) {
+    formattedValue = hex.slice(0, 6);
+  } else formattedValue = undefined;
+
+  return formattedValue ?? hex;
 }
