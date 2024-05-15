@@ -1,0 +1,49 @@
+:where(html) {
+  --code-highlight-1: #0a7f91;
+  --code-highlight-2: #1a72e4;
+  --code-highlight-3: #158b6a;
+
+  --code-foreground: var(--color-neutral-800);
+  --code-background: var(--color-neutral-50);
+  --code-token-comment: var(--color-neutral-400);
+  --code-token-constant: var(--code-highlight-1);
+  --code-token-string: var(--code-highlight-2);
+  --code-token-keyword: var(--code-highlight-1);
+  --code-token-parameter: var(--code-highlight-3);
+  --code-token-function: var(--code-highlight-2);
+  --code-token-string-expression: var(--code-highlight-3);
+  --code-token-punctuation: var(--code-highlight-2);
+  --code-token-link: var(--code-highlight-1);
+
+  [data-code-text] {
+    color: var(--code-text);
+  }
+
+  [data-code-comment] {
+    color: var(--code-text);
+  }
+
+  [data-code-h1] {
+    color: var(--code-highlight-1);
+  }
+
+  [data-code-h2] {
+    color: var(--code-highlight-2);
+  }
+
+  [data-code-h3] {
+    color: var(--code-highlight-3);
+  }
+
+  [data-code-h4] {
+    color: var(--code-highlight-4);
+  }
+
+  [data-code-h5] {
+    color: var(--code-highlight-5);
+  }
+
+  [data-code-h6] {
+    color: var(--code-highlight-6);
+  }
+}

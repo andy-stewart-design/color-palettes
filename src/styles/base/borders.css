@@ -1,0 +1,12 @@
+:where(html) {
+  --border-default: solid var(--black);
+  --border-light: solid oklch(var(--black-oklch) / 20%);
+  --border-xlight: solid oklch(var(--black-oklch) / 10%);
+
+  --border-default-inverted: solid var(--white);
+  --border-light-inverted: solid oklch(var(--white-oklch) / 20%);
+  --border-xlight-inverted: solid oklch(var(--white-oklch) / 10%);
+
+  --brad: var(--space-4);
+  --brad-full: 100vmax;
+}

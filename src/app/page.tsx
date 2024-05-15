@@ -55,7 +55,7 @@ export default async function Home({ searchParams }: PageProps) {
         steps={stepsParam}
         index={keyIndex}
       />
-      <ColorGrid colors={colors.hex} names={colors.intergerName} />
+      <ColorGrid colors={colors.hex} names={colors.intergerName} keyIndex={keyIndex} />
     </main>
   );
 }

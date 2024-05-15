@@ -1,0 +1,30 @@
+.card {
+  position: relative;
+  flex: 1 0 0;
+  background: var(--background-color);
+  transition: background 400ms ease-out;
+}
+
+.hex {
+  position: absolute;
+  top: var(--space-8);
+  left: var(--space-8);
+  background: oklch(var(--black-oklch) / 85%);
+  padding-inline: var(--space-8);
+  padding-block: var(--space-4);
+  box-shadow: var(--box-shadow);
+  border: 1px var(--border-light-inverted);
+  background-clip: padding-box;
+  border-radius: var(--brad);
+
+  color: white;
+  font-family: monospace;
+  font-size: var(--space-12);
+  font-weight: 500;
+  user-select: none;
+
+  @media screen and (width >=800px) {
+    top: var(--space-12);
+    left: var(--space-12);
+  }
+}
