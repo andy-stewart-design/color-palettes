@@ -32,7 +32,7 @@ export default async function Home({ searchParams }: PageProps) {
   });
 
   const colorObject = await generateSpectrum({
-    hex: colorValues.hex,
+    ...colorValues,
     steps: stepsParam,
     index: keyIndexParam,
     min: minLightParam,

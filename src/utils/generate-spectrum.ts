@@ -6,6 +6,9 @@ import type { Okhsl } from "culori";
 
 interface GenerateSpectrumProps {
   hex: string;
+  hue: string;
+  saturation: string;
+  lightness: string;
   steps: string;
   index: string | undefined;
   min: string | undefined;
@@ -42,13 +45,15 @@ export async function generateSpectrum(systemParams: GenerateSpectrumProps) {
   );
   if (cachedSpectrum) return cachedSpectrum;
 
-  const keyColor = okhsl(systemParams.hex);
-
-  if (!keyColor) throw new Error("Invalid color");
-
-  const keyHue = keyColor.h ?? 0;
-  const keySaturation = keyColor.s;
-  const keyLightness = keyColor.l;
+  const keyHue = Number(systemParams.hue);
+  const keySaturation = Number(systemParams.saturation) / 100;
+  const keyLightness = Number(systemParams.lightness) / 100;
+  const keyColor: Okhsl = {
+    mode: "okhsl",
+    h: keyHue,
+    s: keySaturation,
+    l: keyLightness,
+  };
 
   const numSteps = parseFloat(systemParams.steps);
   const lightnessMin = generateMin(systemParams.min, keyLightness);
