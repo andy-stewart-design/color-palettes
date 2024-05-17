@@ -12,7 +12,36 @@ interface GenerateSpectrumProps {
   max: string | undefined;
 }
 
+interface ColorSpectrum {
+  colors: {
+    raw: Okhsl[];
+    hex: string[];
+    intergerName: number[];
+  };
+  keyColor: {
+    hex: string;
+    raw: Okhsl;
+    intergerName: number;
+    name: string;
+  };
+  keyIndex: {
+    current: string;
+    default: string;
+  };
+  lightness: {
+    min: string;
+    max: string;
+  };
+}
+
+const spectrumCache: Array<ColorSpectrum> = [];
+
 export async function generateSpectrum(systemParams: GenerateSpectrumProps) {
+  const cachedSpectrum = spectrumCache.find(
+    (spectrum) => spectrum.keyColor.hex === systemParams.hex
+  );
+  if (cachedSpectrum) return cachedSpectrum;
+
   const keyColor = okhsl(systemParams.hex);
 
   if (!keyColor) throw new Error("Invalid color");
@@ -74,7 +103,7 @@ export async function generateSpectrum(systemParams: GenerateSpectrumProps) {
   const name = await generateColorName(colors[keyIndexCurrent]);
   const intergerNames = generateColorNames(numSteps);
 
-  return {
+  const colorSpectrum = {
     colors: {
       raw: colorsRaw,
       hex: colorsHex,
@@ -95,6 +124,10 @@ export async function generateSpectrum(systemParams: GenerateSpectrumProps) {
       max: (lightnessMax * 100).toString(),
     },
   };
+
+  spectrumCache.push(colorSpectrum);
+
+  return colorSpectrum;
 }
 
 // ----------------------------------------------------------------------
