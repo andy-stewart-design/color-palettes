@@ -1,7 +1,7 @@
 import { range } from "@/utils/arrays";
 import { generateColorNames, generateColorName } from "@/utils/generate-color-names";
 import { DEFAULTS } from "@/constants";
-import { okhsl, formatHex } from "./culori";
+import { formatHex } from "./culori";
 import type { Okhsl } from "culori";
 
 interface GenerateSpectrumProps {
@@ -15,7 +15,35 @@ interface GenerateSpectrumProps {
   max: string | undefined;
 }
 
+interface ColorSpectrum {
+  colors: {
+    raw: Okhsl[];
+    hex: string[];
+    intergerName: number[];
+  };
+  keyColor: {
+    hex: string;
+    raw: Okhsl;
+    intergerName: number;
+    name: string;
+  };
+  keyIndex: {
+    current: string;
+    default: string;
+  };
+  lightness: {
+    min: string;
+    max: string;
+  };
+}
+
+const spectrumCacheArray: Map<string, ColorSpectrum> = new Map();
+
 export async function generateSpectrum(systemParams: GenerateSpectrumProps) {
+  const hash = Object.values(systemParams).join("");
+  const cached = spectrumCacheArray.get(hash);
+  if (cached) return cached;
+
   const keyHue = Number(systemParams.hue);
   const keySaturation = Number(systemParams.saturation) / 100;
   const keyLightness = Number(systemParams.lightness) / 100;
@@ -100,6 +128,8 @@ export async function generateSpectrum(systemParams: GenerateSpectrumProps) {
       max: (lightnessMax * 100).toString(),
     },
   };
+
+  spectrumCacheArray.set(hash, colorSpectrum);
 
   return colorSpectrum;
 }

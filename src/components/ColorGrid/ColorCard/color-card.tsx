@@ -2,7 +2,7 @@
 
 import { forwardRef } from "react";
 import { motion } from "framer-motion";
-// import ColorCardButton from "./ColorCardButton";
+import ColorCardButton from "./ColorCardButton";
 import classes from "./component.module.css";
 
 type PageProps = {
@@ -19,6 +19,7 @@ type PageProps = {
 const ColorCard = forwardRef<HTMLDivElement, PageProps>((props, ref) => {
   const { color, index, numItems, name, keyIndex } = props;
   const isActive = index === Number(keyIndex.current);
+
   const boxShadow = `0 3px 8px -2px rgba(0 0 0 / ${(index + 1) * 0.025 + 0.15})`;
 
   return (
@@ -39,7 +40,7 @@ const ColorCard = forwardRef<HTMLDivElement, PageProps>((props, ref) => {
           {name}: {color}
         </span>
       </motion.div>
-      {/* <ColorCardButton index={index} keyIndex={keyIndex} isActive={isActive} /> */}
+      <ColorCardButton index={index} keyIndex={keyIndex} isActive={isActive} />
     </motion.div>
   );
 });

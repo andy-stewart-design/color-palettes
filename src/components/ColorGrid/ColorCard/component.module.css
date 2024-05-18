@@ -1,6 +1,11 @@
 .card {
   position: relative;
   flex: 1 0 0;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   background: var(--background-color);
   transition: background 400ms ease-out;
 }
