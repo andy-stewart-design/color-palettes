@@ -6,6 +6,7 @@ import ColorCard from "./ColorCard";
 
 type PropTypes = {
   colors: Array<string>;
+  accentColors: Array<string>;
   names: Array<number>;
   keyIndex: {
     current: string;
@@ -13,7 +14,7 @@ type PropTypes = {
   };
 };
 
-export default function ColorGrid({ colors, names, keyIndex }: PropTypes) {
+export default function ColorGrid({ colors, accentColors, names, keyIndex }: PropTypes) {
   return (
     <section className={classes.grid}>
       <AnimatePresence mode={"popLayout"} initial={false}>
@@ -21,6 +22,7 @@ export default function ColorGrid({ colors, names, keyIndex }: PropTypes) {
           <ColorCard
             key={index}
             color={color}
+            accentColor={accentColors[index]}
             index={index}
             numItems={colors.length}
             name={names[index]}

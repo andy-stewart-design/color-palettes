@@ -38,6 +38,7 @@ export default function TextInput({ name, label, value: systemValue, form }: Inp
       onKeyDown={handleKeyDown}
       onKeyUp={handleKeyUp}
       className={shared.formGroup}
+      style={{ "--swatch-color": `#${systemValue}` }}
     >
       <Label className={shared.label}>
         {displayLabel} {DEV && <span className={shared.resetCount}>Resets: {key}</span>}

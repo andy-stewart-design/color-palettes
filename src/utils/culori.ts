@@ -1,5 +1,5 @@
-import { formatHex, converter } from "culori";
+import { formatHex, converter, wcagContrast } from "culori";
 
 const okhsl = converter("okhsl");
 
-export { okhsl, formatHex };
+export { okhsl, formatHex, wcagContrast };

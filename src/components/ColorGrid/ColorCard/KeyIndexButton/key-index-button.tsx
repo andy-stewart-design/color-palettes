@@ -1,10 +1,11 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 // import { Locked, Unlocked } from "@/components/icons/16";
-import { PARAMS } from "@/constants";
 import Link from "next/link";
+import cn from "clsx";
+import { PARAMS } from "@/constants";
 import classes from "./component.module.css";
 
 type PageProps = {
@@ -16,13 +17,31 @@ type PageProps = {
   isActive: boolean;
 };
 
-export default function ColorCardButton({ index, keyIndex, isActive }: PageProps) {
+export default function KeyIndexButton({ index, keyIndex, isActive }: PageProps) {
   const currentParams = useSearchParams();
   const nextParams = new URLSearchParams(currentParams);
   nextParams.set(PARAMS.index, String(index));
 
   return (
-    <Link href={`/?${nextParams.toString()}`}>{isActive ? "Current" : "Set"} Index</Link>
+    <>
+      {isActive && (
+        <motion.button layoutId="key-index-button" className={cn(classes.button, classes.keyIndex)}>
+          Key Index
+        </motion.button>
+      )}
+      <AnimatePresence mode="popLayout" initial={false}>
+        {!isActive && (
+          <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <Link
+              className={cn(classes.button, classes.setIndex)}
+              href={`/?${nextParams.toString()}`}
+            >
+              Set Index
+            </Link>
+          </motion.span>
+        )}
+      </AnimatePresence>
+    </>
     // <>
     //   {isActive && (
     //     <motion.button

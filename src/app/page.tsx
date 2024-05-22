@@ -1,4 +1,5 @@
-// TODO: Style the form
+// TODO: troubleshoot animation when changing step count
+// TODO: Style the number inputs
 
 import { cookies } from "next/headers";
 import ControlPanel from "@/components/ControlPanel";
@@ -55,7 +56,12 @@ export default async function Home({ searchParams }: PageProps) {
         steps={stepsParam}
         index={keyIndex}
       />
-      <ColorGrid colors={colors.hex} names={colors.intergerName} keyIndex={keyIndex} />
+      <ColorGrid
+        colors={colors.hex}
+        accentColors={colors.accentColors}
+        names={colors.intergerName}
+        keyIndex={keyIndex}
+      />
     </main>
   );
 }

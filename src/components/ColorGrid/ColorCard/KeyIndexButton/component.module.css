@@ -1,0 +1,24 @@
+.button {
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: var(--text-color);
+  padding-block: var(--space-4);
+  padding-inline: var(--space-12);
+  border-radius: var(--brad);
+}
+
+.keyIndex {
+  opacity: 1;
+  background: oklch(var(--white-oklch) / 0.85);
+  box-shadow: var(--shadow-elevation-2);
+}
+
+.setIndex {
+  opacity: 0;
+  transition: opacity 150ms var(--ease-out-4);
+  border: 1.25px solid currentColor;
+
+  div[data-color-card]:hover & {
+    opacity: 1;
+  }
+}

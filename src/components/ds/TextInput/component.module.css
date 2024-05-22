@@ -19,7 +19,7 @@
     left: calc((var(--input-height) - var(--swatch-size)) / 2);
     width: var(--swatch-size);
     height: var(--swatch-size);
-    background: var(--color-primary);
+    background: var(--swatch-color);
     border-radius: 100vmax;
   }
 

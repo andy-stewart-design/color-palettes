@@ -1,7 +1,7 @@
 import { range } from "@/utils/arrays";
 import { generateColorNames, generateColorName } from "@/utils/generate-color-names";
 import { DEFAULTS } from "@/constants";
-import { formatHex } from "./culori";
+import { formatHex, wcagContrast } from "./culori";
 import type { Okhsl } from "culori";
 
 interface GenerateSpectrumProps {
@@ -20,12 +20,14 @@ interface ColorSpectrum {
     raw: Okhsl[];
     hex: string[];
     intergerName: number[];
+    accentColors: string[];
   };
   keyColor: {
     hex: string;
     raw: Okhsl;
     intergerName: number;
     name: string;
+    accentColor: string;
   };
   keyIndex: {
     current: string;
@@ -95,16 +97,19 @@ export async function generateSpectrum(systemParams: GenerateSpectrumProps) {
     return formatHex(color);
   });
 
-  const colors = lightnessValues.map((lightness) => {
-    return formatHex({
-      mode: "okhsl",
-      h: keyHue,
-      s: keySaturation,
-      l: lightness,
-    });
+  const accentColors = colorsHex.map((color) => {
+    const colorLight = colorsHex.at(0);
+    const colorDark = colorsHex.at(-1);
+
+    if (!colorLight || !colorDark) throw new Error("Invalid color values");
+
+    const contrastLight = wcagContrast(color, colorLight);
+    const contrastDark = wcagContrast(color, colorDark);
+    const accentColor = contrastLight > contrastDark ? colorLight : colorDark;
+    return accentColor;
   });
 
-  const name = await generateColorName(colors[keyIndexCurrent]);
+  const name = await generateColorName(colorsHex[keyIndexCurrent]);
   const intergerNames = generateColorNames(numSteps);
 
   const colorSpectrum = {
@@ -112,12 +117,14 @@ export async function generateSpectrum(systemParams: GenerateSpectrumProps) {
       raw: colorsRaw,
       hex: colorsHex,
       intergerName: intergerNames,
+      accentColors,
     },
     keyColor: {
       hex: systemParams.hex,
       raw: keyColor,
       intergerName: intergerNames[keyIndexCurrent],
       name,
+      accentColor: accentColors[keyIndexCurrent],
     },
     keyIndex: {
       current: keyIndexCurrent.toString(),
