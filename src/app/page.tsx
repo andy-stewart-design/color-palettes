@@ -1,4 +1,4 @@
-// TODO: troubleshoot animation when changing step count
+// TODO: fic button issue with number input
 // TODO: Style the number inputs
 
 import { cookies } from "next/headers";

@@ -45,7 +45,7 @@ export default function NumberInput({
         {displayLabel} {DEV && <span className={shared.resetCount}>Resets: {key}</span>}
       </Label>
       <Group className={classes.inputGroup}>
-        <Button slot="decrement" onPressUp={requestSubmit}>
+        <Button slot="decrement" onPressUp={requestSubmit} isDisabled={false}>
           -
         </Button>
         <Input
@@ -54,7 +54,7 @@ export default function NumberInput({
           data-1p-ignore
           data-lpignore
         />
-        <Button slot="increment" onPressUp={requestSubmit}>
+        <Button slot="increment" onPressUp={requestSubmit} isDisabled={false}>
           +
         </Button>
       </Group>
