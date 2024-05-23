@@ -12,7 +12,7 @@ export default function HexColorButton({ color, name }: PropTypes) {
 
   return (
     <motion.button onClick={() => copyToClipboard(color)} layout="position" className={classes.hex}>
-      <span>{showSuccess ? "Copied!" : `${name}: ${color}`}</span>
+      <span>{showSuccess ? "Copied hex" : `${name}: ${color}`}</span>
     </motion.button>
   );
 }

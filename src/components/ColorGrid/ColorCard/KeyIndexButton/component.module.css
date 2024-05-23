@@ -9,6 +9,7 @@
 
 .keyIndex {
   opacity: 1;
+  color: var(--black);
   background: oklch(var(--white-oklch) / 0.85);
   box-shadow: var(--shadow-elevation-2);
 }
