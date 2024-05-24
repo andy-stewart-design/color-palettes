@@ -1,53 +1,55 @@
-.slider {
-  --track-bg: black;
+@layer ds {
+  .slider {
+    --track-bg: black;
 
-  .metadata {
-    display: grid;
-    grid-template-columns: 1fr min-content;
-  }
-
-  .output {
-    font-size: 0.8125rem;
-  }
-
-  .trackWrap {
-    padding-inline: 0.75rem;
-  }
-
-  .track {
-    display: relative;
-    position: relative;
-    padding: 0.75rem 0;
-
-    /* track line */
-    &:before {
-      /* translate: 0 -50%; */
-      content: "";
-      display: block;
-      position: absolute;
-      left: -0.75rem;
-      right: -0.75rem;
-      height: 100%;
-      translate: 0 -50%;
-      background: var(--track-bg);
-      outline: 1px solid rgb(0 0 0 / 0.1);
-      border-radius: 100vmax;
-    }
-  }
-
-  .thumb {
-    width: 0.75rem;
-    height: 0.75rem;
-    border-radius: 50%;
-    background: white;
-    box-shadow: 0px 2px 12px -2px rgb(0 0 0 / 0.35);
-
-    &[data-dragging] {
-      outline: 4px solid rgb(255 255 255 / 0.35);
+    .metadata {
+      display: grid;
+      grid-template-columns: 1fr min-content;
     }
 
-    &[data-focus-visible] {
-      outline: 2px solid blue;
+    .output {
+      font-size: 0.8125rem;
+    }
+
+    .trackWrap {
+      padding-inline: 0.75rem;
+    }
+
+    .track {
+      display: relative;
+      position: relative;
+      padding: 0.75rem 0;
+
+      /* track line */
+      &:before {
+        /* translate: 0 -50%; */
+        content: "";
+        display: block;
+        position: absolute;
+        left: -0.75rem;
+        right: -0.75rem;
+        height: 100%;
+        translate: 0 -50%;
+        background: var(--track-bg);
+        outline: 1px solid rgb(0 0 0 / 0.1);
+        border-radius: 100vmax;
+      }
+    }
+
+    .thumb {
+      width: 0.75rem;
+      height: 0.75rem;
+      border-radius: 50%;
+      background: white;
+      box-shadow: 0px 2px 12px -2px rgb(0 0 0 / 0.35);
+
+      &[data-dragging] {
+        outline: 4px solid rgb(255 255 255 / 0.35);
+      }
+
+      &[data-focus-visible] {
+        outline: 2px solid blue;
+      }
     }
   }
 }

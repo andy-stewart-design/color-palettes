@@ -1,6 +1,6 @@
-@layer reset, base, component, override;
+@layer reset, base, ds, component, utility, override;
 
-@import "./base/reset.css" layer(reset);
+@import "./base/reset.css";
 
 @import "./base/color.css" layer(base);
 @import "./base/ease.css" layer(base);
@@ -8,6 +8,8 @@
 @import "./base/borders.css" layer(base);
 @import "./base/shadows.css" layer(base);
 @import "./base/code.css" layer(base);
+
+@import "./utilities.css" layer(utility);
 
 html {
   --black-oklch: 5% 0.005 270;
