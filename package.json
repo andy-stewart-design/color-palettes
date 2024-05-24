@@ -11,10 +11,10 @@
   "dependencies": {
     "clsx": "^2.1.1",
     "culori": "^4.0.1",
-    "framer-motion": "^11.1.9",
+    "framer-motion": "^11.2.6",
     "next": "14.2.3",
     "react": "^18",
-    "react-aria-components": "^1.2.0",
+    "react-aria-components": "^1.2.1",
     "react-dom": "^18",
     "zod": "^3.23.8"
   },
