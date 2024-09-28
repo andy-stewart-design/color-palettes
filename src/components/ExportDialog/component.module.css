@@ -1,0 +1,118 @@
+.overlay {
+  background-color: oklch(var(--black-oklch) / 0.5);
+  backdrop-filter: blur(var(--space-4));
+  position: fixed;
+  inset: 0;
+
+  &[data-state="open"] {
+    animation-name: exportOverlayShow;
+    animation-duration: 400ms;
+    animation-timing-function: var(--ease-out-5);
+    animation-fill-mode: forwards;
+  }
+
+  &[data-state="closed"] {
+    animation-name: exportOverlayHide;
+    animation-duration: 300ms;
+    animation-timing-function: var(--ease-out-3);
+    animation-fill-mode: forwards;
+  }
+}
+
+.dialog {
+  display: flex;
+  flex-direction: column;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border-radius: var(--brad);
+  box-shadow: var(--shadow-elevation-2);
+  position: fixed;
+  width: 90vw;
+  max-width: 55rem;
+  height: 75vh;
+  overflow-y: scroll;
+  animation-delay: 100ms;
+  opacity: 0;
+
+  &[data-state="open"] {
+    animation-name: exportDialogShow;
+    animation-duration: 300ms;
+    animation-timing-function: var(--ease-out-5);
+    animation-fill-mode: forwards;
+  }
+
+  &[data-state="closed"] {
+    animation-delay: 0ms;
+    animation-name: exportDialogHide;
+    animation-duration: 300ms;
+    animation-timing-function: var(--ease-out-3);
+    animation-fill-mode: forwards;
+  }
+}
+
+.header {
+  position: sticky;
+  top: 0px;
+  padding-inline-start: var(--space-24);
+  padding-inline-end: var(--space-16);
+  background-color: var(--white);
+  border-bottom: 1px var(--border-xlight);
+
+  z-index: 2;
+
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+
+  height: var(--space-48);
+
+  h2 {
+    font-size: var(--space-13);
+    font-weight: 500;
+    flex-grow: 1;
+  }
+}
+
+.close {
+  display: grid;
+  place-items: center;
+
+  height: var(--space-32);
+  width: var(--space-32);
+}
+
+@keyframes exportOverlayShow {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes exportOverlayHide {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes exportDialogShow {
+  from {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + var(--space-32))) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes exportDialogHide {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+}

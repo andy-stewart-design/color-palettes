@@ -1,0 +1,27 @@
+.trigger {
+  --tansition-duration: 100ms;
+  --tansition-easing: var(--ease-out-3);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-8);
+
+  inline-size: 100%;
+  background: var(--color-primary-dark);
+  border-radius: var(--brad-full);
+  padding-block-start: var(--space-12);
+  padding-block-end: var(--space-14);
+
+  text-align: center;
+  font-weight: 500;
+  color: var(--color-primary-lighter);
+
+  transition: scale var(--tansition-duration) var(--tansition-easing),
+    background var(--tansition-duration) var(--tansition-easing);
+
+  &:active {
+    scale: 0.95;
+    background: var(--color-primary-darker);
+  }
+}

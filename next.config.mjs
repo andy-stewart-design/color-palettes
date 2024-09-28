@@ -2,6 +2,7 @@
 const nextConfig = {
   experimental: {
     useLightningcss: true,
+    optimizePackageImports: ["shiki"],
   },
 };
 

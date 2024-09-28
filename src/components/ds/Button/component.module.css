@@ -1,0 +1,52 @@
+.button {
+  --tansition-duration: 150ms;
+  --tansition-easing: var(--ease-out-3);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-8);
+
+  /* inline-size: 100%; */
+  border-radius: var(--brad-full);
+  height: var(--space-48);
+  min-width: var(--space-176);
+  padding-inline: var(--space-20);
+  padding-block-end: var(--space-2);
+
+  text-align: center;
+  font-weight: 500;
+
+  &.primary {
+    background: var(--color-primary-dark);
+    color: var(--color-primary-lighter);
+    transition: scale var(--tansition-duration) var(--tansition-easing),
+      background var(--tansition-duration) var(--tansition-easing),
+      color var(--tansition-duration) var(--tansition-easing);
+
+    &:active,
+    &[data-active] {
+      background: var(--color-primary);
+      color: var(--white);
+    }
+  }
+
+  &.secondary {
+    background: transparent;
+    border: 1.5px solid var(--color-primary-dark);
+    color: var(--color-primary-dark);
+    transition: scale var(--tansition-duration) var(--tansition-easing),
+      border var(--tansition-duration) var(--tansition-easing),
+      color var(--tansition-duration) var(--tansition-easing);
+
+    &:active,
+    &[data-active] {
+      border: 1.5px solid var(--color-primary);
+      color: var(--color-primary);
+    }
+  }
+
+  &:active {
+    scale: 0.95;
+  }
+}

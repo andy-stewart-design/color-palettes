@@ -4,12 +4,21 @@ import { startTransition, useOptimistic, useRef, useState } from "react";
 import { useFormState } from "react-dom";
 import { useRouter } from "next/navigation";
 import { TextInput, NumberInput, RangeInput } from "@/components/ds";
+import ExportDialog, { ExportRoot, ExportTrigger } from "@/components/ExportDialog";
 import { generateKeyColorClient } from "@/utils/generate-key-color";
+import { generateExport } from "@/utils/code";
 import { PARAMS, SystemParamsSchema, ChangedParamsSchema } from "@/constants";
 import type { SystemParams, ChangedParams } from "@/constants";
+import type { Okhsl } from "culori";
 import classes from "./component.module.css";
 
 interface PropTypes {
+  colors: {
+    raw: Okhsl[];
+    hex: string[];
+    intergerName: number[];
+    accentColors: string[];
+  };
   hex: string;
   hue: string;
   saturation: string;
@@ -30,6 +39,10 @@ export default function ControlPanel(props: PropTypes) {
   const [_, formAction] = useFormState(handleSubmit, JSON.stringify(systemValues));
   const [optimisticValues, setOptimisticValues] = useOptimistic<SystemParams>(systemValues);
   const [currentSearchParams, setCurrentSearchParams] = useState(() => new URLSearchParams());
+  const exportedColors = generateExport({
+    colors: props.colors.hex,
+    intergerName: props.colors.intergerName,
+  });
 
   function handleSubmit(_: string, nextFormData: FormData) {
     const formData = compare(optimisticValues, nextFormData);
@@ -110,6 +123,12 @@ export default function ControlPanel(props: PropTypes) {
           max={Number(optimisticValues.steps) - 1}
           form={formRef}
         />
+      </div>
+      <div className={classes.section}>
+        <ExportRoot>
+          <ExportTrigger />
+          <ExportDialog colors={exportedColors} />
+        </ExportRoot>
       </div>
     </form>
   );

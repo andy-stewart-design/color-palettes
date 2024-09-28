@@ -48,6 +48,7 @@ export default async function Home({ searchParams }: PageProps) {
   return (
     <main className={classes.main} style={{ ...cssVariables }}>
       <ControlPanel
+        colors={colors}
         hex={colorValues.hex}
         hue={colorValues.hue}
         saturation={colorValues.saturation}
