@@ -1,6 +1,7 @@
 "use client";
 
-import { CSSProperties, useState, useActionState } from "react";
+import { CSSProperties, useState } from "react";
+import { useFormState } from "react-dom";
 import { converter, formatCss, formatHex } from "culori";
 
 type Hsl = ReturnType<typeof hsl>;
@@ -33,8 +34,8 @@ function hsl(color: string) {
 }
 
 function App() {
-  const [state, formAction] = useActionState((previousState: number, formData: FormData) => {
-    console.log(previousState, formData);
+  const [state, formAction] = useFormState((previousState: number, formData: FormData) => {
+    console.log(previousState, formData.get("foo"), formData.get("test"));
 
     return 0;
   }, 0);
@@ -73,10 +74,27 @@ function App() {
     }
   }
 
+  function handleHexInput(e: React.ChangeEvent<HTMLInputElement>) {
+    let value = e.target.value.toUpperCase();
+    value = value.replace(/[^0-9A-F]/g, "");
+    value = value.slice(0, 6);
+    e.target.value = value;
+  }
+
   return (
     <>
       <header>
-        <form action=""></form>
+        <form action={formAction}>
+          <div>
+            <span style={{ opacity: 0.4 }}>#</span>
+            <input name="test" onChange={handleHexInput} />
+          </div>
+          <input
+            type="range"
+            name="foo"
+            onChange={(e) => (e.target.parentElement as HTMLFormElement).requestSubmit()}
+          />
+        </form>
         <div>
           <p className="swatch">
             <span style={{ background: currentColor.hex }} />
